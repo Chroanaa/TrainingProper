@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 import HomeLayout from "./layout/HomeLayout"; // Corrected import
 import Home from "./pages/Home"; // Corrected import
-import TrainingList from "./pages/TrainingList"; // Corrected import
+import TrainingList from "./pages/TrainingList";
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
