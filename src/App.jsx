@@ -11,12 +11,14 @@ import {
 import HomeLayout from "./layout/HomeLayout"; // Corrected import
 import Home from "./pages/Home"; // Corrected import
 import TrainingList from "./pages/TrainingList";
+import Create from "./pages/Create";
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path='/' element={<HomeLayout />}>
         <Route index element={<Home />} />
         <Route path='TrainingList' element={<TrainingList />} />
+        <Route path='Create' element={<Create />} />
       </Route>
     )
   );
