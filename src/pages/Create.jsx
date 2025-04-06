@@ -2,7 +2,7 @@ import React from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import QuillResizeImage from "quill-resize-image";
-import { insert } from "../../firebase/insert";
+import { insert } from "../../firebase/createDocument";
 import { generateId } from "../hooks/generateId";
 import { useNavigate } from "react-router-dom";
 Quill.register("modules/resize", QuillResizeImage);
@@ -11,7 +11,7 @@ function Create() {
   const quillInstanceRef = React.useRef(null);
   const [title, setTitle] = React.useState("Untitled");
   const timeCreated = new Date().toISOString();
-
+  const navigate = useNavigate();
   React.useEffect(() => {
     if (!editorRef.current) return;
     if (quillInstanceRef.current) return;
@@ -32,24 +32,17 @@ function Create() {
       },
     });
   }, []);
-  const handleSave = () => {
+  const handleSave = async () => {
     const html = quillInstanceRef.current.root.innerHTML;
     const id = generateId();
-    insert({
+    await insert({
       id: id,
       title: title,
       content: html,
       createdAt: timeCreated,
-      updatedAt: null,
-    })
-      .then(() => {
-        console.log("Data inserted successfully");
-        const navigate = useNavigate();
-        navigate("/TrainingList", { replace: true });
-      })
-      .catch((error) => {
-        console.error("Error inserting data:", error);
-      });
+    });
+    console.log("Document saved with ID:", id);
+    navigate("/");
   };
   const handleOnChange = (e) => {
     setTitle(e.target.value);

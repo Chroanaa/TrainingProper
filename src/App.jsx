@@ -10,14 +10,14 @@ import {
 } from "react-router-dom";
 import HomeLayout from "./layout/HomeLayout"; // Corrected import
 import Home from "./pages/Home"; // Corrected import
-import TrainingList from "./pages/TrainingList";
+import SendDocument from "./pages/SendDocument";
 import Create from "./pages/Create";
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path='/' element={<HomeLayout />}>
         <Route index element={<Home />} />
-        <Route path='TrainingList' element={<TrainingList />} />
+        <Route path='SendDocument' element={<SendDocument />} />
         <Route path='Create' element={<Create />} />
       </Route>
     )

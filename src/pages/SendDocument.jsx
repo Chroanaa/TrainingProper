@@ -1,10 +1,9 @@
 import axios from "axios";
 import React from "react";
 
-function TrainingList() {
+function SendDocument() {
   const [loading, setLoading] = React.useState(false);
   const [input, setInput] = React.useState(null);
-  const [uploadProgress, setUploadProgress] = React.useState(0);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -24,11 +23,6 @@ function TrainingList() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          onUploadProgress: (progressEvent) => {
-            const { loaded, total } = progressEvent;
-            const percentCompleted = Math.round((loaded * 100) / total);
-            setUploadProgress(percentCompleted);
-          },
         }
       );
       setLoading(false);
@@ -46,9 +40,8 @@ function TrainingList() {
       <button onClick={handleSendFile}>Send Training List</button>
       <input type='file' onChange={handleFileChange} required />
       {loading && <p>Loading...</p>}
-      {uploadProgress > 0 && <p>Upload Progress: {uploadProgress}%</p>}
     </div>
   );
 }
 
-export default TrainingList;
+export default SendDocument;
