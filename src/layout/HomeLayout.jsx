@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import Header from "../components/Header"; // Adjusted import path
+import Header from "../components/Header";
+
 function HomeLayout() {
   return (
     <div>

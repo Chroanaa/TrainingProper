@@ -9,6 +9,9 @@ function Header() {
       <NavLink to='/Create' className='text-2xl font-bold text-blue-500'>
         Create Training
       </NavLink>
+      <NavLink to='/List' className='text-2xl font-bold text-blue-500'>
+        Training List
+      </NavLink>
     </div>
   );
 }
