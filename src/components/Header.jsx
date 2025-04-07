@@ -1,23 +1,26 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router";
-import Navigation from "./Navigation";
+import Logo from "../assets/images/logo.png";
 
 function Header() {
   return (
-    <div className="flex">
-      <Navigation />
-      <div className="border-2 border-gray-300 bg-white w-full h-screen p-5">
-           <NavLink to='/SendDocument' className='text-2xl font-bold text-red-500'>
-                    Send Syllabus
-             </NavLink>
-             <NavLink to='/Create' className='text-2xl font-bold text-blue-500'>
-                  Create Training
-              </NavLink>
-             <NavLink to='/List' className='text-2xl font-bold text-blue-500'>
-                  Training List
-              </NavLink>
-      </div>
-    </div>
+     <div className="flex flex-col justify-start items-start bg-[#4B5320] h-screen w-[20%] p-2">
+               <div className=" mb-5">
+                   <img src={Logo} alt="" />
+                   <p className="text-center text-[#FFD700] font-bold">QUEZON CITY UNIVERSITY</p>
+                   <p className="text-center text-white text-[0.7rem]">Reserve Officer’s Training Corps</p>
+               </div>
+   
+               <div className="mt-5 flex flex-col gap-1">
+                   <NavLink  className="text-[0.7rem] text-white">COURSE MATERIAL PREPARATION</NavLink>
+                   <NavLink className="text-[0.7rem] text-white">EVENT DEPLOYMENT REVIEW</NavLink>
+                   <NavLink className="text-[0.7rem] text-white">TRAINING PROGRAM</NavLink>
+                   <NavLink className="text-[0.7rem] text-white">TRAINING REPORT</NavLink>
+                   <NavLink className="text-[0.7rem] text-white">REPORT CREATION</NavLink>
+                   <NavLink className="text-[0.7rem] text-white">INCIDENT REPORT    </NavLink>
+                   <NavLink className="text-[0.7rem] text-white">ATTENDANCE REPORT</NavLink>
+               </div>
+           </div>
   );
 }
 
