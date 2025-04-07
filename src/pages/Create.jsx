@@ -1,39 +1,15 @@
 import React from "react";
-import Quill from "quill";
-import "quill/dist/quill.snow.css";
-import QuillResizeImage from "quill-resize-image";
 import { insert } from "../../firebase/createDocument";
 import { generateId } from "../hooks/generateId";
 import { useNavigate } from "react-router-dom";
-Quill.register("modules/resize", QuillResizeImage);
+import QuillComponent from "../components/Quill";
 function Create() {
-  const editorRef = React.useRef(null);
-  const quillInstanceRef = React.useRef(null);
-  const [title, setTitle] = React.useState("Untitled");
-  const timeCreated = new Date().toISOString();
   const navigate = useNavigate();
-  React.useEffect(() => {
-    if (!editorRef.current) return;
-    if (quillInstanceRef.current) return;
-    quillInstanceRef.current = new Quill(editorRef.current, {
-      theme: "snow",
-      modules: {
-        toolbar: [
-          [{ header: [1, 2, false] }],
-          ["bold", "italic", "underline"],
-          ["image", "code-block"],
-          ["clean"],
-        ],
-        resize: {
-          locale: {
-            center: "center",
-          },
-        },
-      },
-    });
-  }, []);
+  const [title, setTitle] = React.useState("Untitled");
+  const quillRef = React.useRef(null);
+  const timeCreated = new Date().toISOString();
   const handleSave = async () => {
-    const html = quillInstanceRef.current.root.innerHTML;
+    const html = quillRef.current?.getHtml();
     const id = generateId();
     await insert({
       id: id,
@@ -54,7 +30,7 @@ function Create() {
       <button type='submit' onClick={handleSave}>
         Save
       </button>
-      <div ref={editorRef} className='quill-editor'></div>
+      <QuillComponent content={""} ref={quillRef} />
     </div>
   );
 }
