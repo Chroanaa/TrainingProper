@@ -1,8 +1,9 @@
 import React from "react";
 import { insert } from "../../firebase/createDocument";
-import { generateId } from "../hooks/generateId";
+import { generateId } from "../utils/generateId";
 import { useNavigate } from "react-router-dom";
 import QuillComponent from "../components/Quill";
+import { Button } from "@mui/material";
 function Create() {
   const navigate = useNavigate();
   const [title, setTitle] = React.useState("Untitled");
@@ -25,11 +26,10 @@ function Create() {
   };
   return (
     <div>
-      <h1>Create</h1>
       <input type='text' value={title} onChange={handleOnChange} />
-      <button type='submit' onClick={handleSave}>
+      <Button variant='contained' type='submit' onClick={handleSave}>
         Save
-      </button>
+      </Button>
       <QuillComponent content={""} ref={quillRef} />
     </div>
   );

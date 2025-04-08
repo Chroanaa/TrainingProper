@@ -4,6 +4,7 @@ import { getDocument } from "../../firebase/getDocument";
 import QuillComponent from "../components/Quill";
 import { updateDocument } from "../../firebase/updateDocument";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@mui/material";
 export async function loader({ params }) {
   const { id } = params;
   const document = await getDocument(id);
@@ -36,7 +37,9 @@ function ViewDocument() {
   return (
     <div>
       <input type='text' value={newTitle} onChange={handleOnChange} />
-      <button onClick={handleOnSave}>Save</button>
+      <Button variant='contained' onClick={handleOnSave}>
+        Save
+      </Button>
       <QuillComponent ref={quillRef} />
     </div>
   );

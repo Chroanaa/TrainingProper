@@ -13,7 +13,8 @@ import Home from "./pages/Home"; // Corrected import
 import SendDocument from "./pages/SendDocument";
 import Create from "./pages/Create";
 import TrainingList, { loader as TrainingLoader } from "./pages/TrainingList";
-import ViewDocument, { loader as viewDocLoader } from "./pages/ViewDocument"; // Corrected import
+import ViewDocument, { loader as viewDocLoader } from "./pages/ViewDocument";
+import CourseMaterialPreparation from "./pages/CourseMaterialPreparation";
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -26,6 +27,10 @@ function App() {
           path='List/:id'
           element={<ViewDocument />}
           loader={viewDocLoader}
+        />
+        <Route
+          path='CourseMaterialPrep'
+          element={<CourseMaterialPreparation />}
         />
       </Route>
     )
