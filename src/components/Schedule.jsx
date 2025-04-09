@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, FormControl, InputLabel, Select } from "@mui/material";
-import Input from "@mui/material/Input";
 import MenuItem from "@mui/material/MenuItem";
 
 function Schedule({
@@ -58,6 +57,7 @@ function Schedule({
             <input
               type='text'
               value={item.event}
+              className='border border-gray-300 rounded p-2'
               onChange={(event) => handleScheduleChange(index, event)}
             />
           </li>
