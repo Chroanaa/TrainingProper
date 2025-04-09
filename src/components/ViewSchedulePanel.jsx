@@ -9,16 +9,7 @@ import {
   ListItemButton,
 } from "@mui/material";
 import { getSchedules } from "../../firebase/getSchedules";
-function ViewSchedulePanel({ value }) {
-  const [schedules, setSchedules] = React.useState([]);
-  React.useEffect(() => {
-    const fetchSchedules = async () => {
-      const schedules = await getSchedules();
-      setSchedules(schedules);
-      console.log(schedules);
-    };
-    fetchSchedules();
-  }, []);
+function ViewSchedulePanel({ value, schedules }) {
   const [openItems, setOpenItems] = React.useState({});
   const handleClick = (index) => {
     setOpenItems((prev) => ({

@@ -3,6 +3,7 @@ import Schedule from "../components/Schedule";
 import { saveSchedule } from "../../firebase/saveSchedule";
 import Alert from "@mui/material/Alert";
 import CustomTabPanel from "./CustomTabPanel";
+import { useSearchParams } from "react-router";
 function SetSchedulePanel({ value, index }) {
   const scheduleTime = [
     "6:00 AM",
@@ -19,6 +20,8 @@ function SetSchedulePanel({ value, index }) {
       event: "",
     }))
   );
+  const [searchParams, setSearchParams] = useSearchParams();
+  const params = new URLSearchParams(window.location.search);
   const [semester, setSemester] = React.useState();
   const [schoolYear, setSchoolYear] = React.useState();
   React.useEffect(() => {}, [semester]);
@@ -45,14 +48,10 @@ function SetSchedulePanel({ value, index }) {
       event: schedule.map((item) => item.event),
     };
     await saveSchedule(scheduleData);
-    setSchedule(
-      schedule.map((item) => ({
-        ...item,
-        event: "",
-      }))
-    );
     setSemester("");
     setSchoolYear("");
+    params.set("list", "view");
+    setSearchParams(params);
   };
   return (
     <div>

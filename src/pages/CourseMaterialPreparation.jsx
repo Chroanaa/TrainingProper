@@ -5,9 +5,31 @@ import SetSchedulePanel from "../components/SetSchedulePanel";
 import ViewSchedulePanel from "../components/ViewSchedulePanel";
 import { getSchedules } from "../../firebase/getSchedules";
 import { useLoaderData } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 function CourseMaterialPreparation() {
+  const params = new URLSearchParams(window.location.search);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const list = params.get("list");
+  const [schedules, setSchedules] = React.useState([]);
+  React.useEffect(() => {
+    const unsubscribe = getSchedules((data) => {
+      setSchedules(data);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
   const [value, setValue] = React.useState(0);
+  React.useEffect(() => {
+    if (list === "view") {
+      setValue(2);
+    }
+    setTimeout(() => {
+      searchParams.delete("list");
+      setSearchParams(searchParams);
+    }, 200);
+  }, [list]);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -19,7 +41,7 @@ function CourseMaterialPreparation() {
           <CoursePrepTabs value={value} handleChange={handleChange} />
           <UploadMaterialPanel value={value} index={0} />
           <SetSchedulePanel value={value} index={1} />
-          <ViewSchedulePanel value={value} index={2} />
+          <ViewSchedulePanel value={value} index={2} schedules={schedules} />
         </div>
       </div>
     </div>
