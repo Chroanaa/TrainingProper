@@ -23,10 +23,10 @@ function SetSchedulePanel({ value, index }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const params = new URLSearchParams(window.location.search);
   const [semester, setSemester] = React.useState();
-  const [schoolYear, setSchoolYear] = React.useState();
+  const [trainingDay, setTrainingDay] = React.useState();
   React.useEffect(() => {}, [semester]);
 
-  React.useEffect(() => {}, [schoolYear]);
+  React.useEffect(() => {}, [trainingDay]);
 
   const handleScheduleChange = (index, event) => {
     const newSchedule = [...schedule];
@@ -36,37 +36,48 @@ function SetSchedulePanel({ value, index }) {
   const handleSemesterChange = (value) => {
     setSemester(value);
   };
-  const handleSchoolYearChange = (value) => {
-    setSchoolYear(value);
+  const handleChangeTrainingDay = (value) => {
+    setTrainingDay(value);
   };
   const handleSave = async () => {
     const scheduleData = {
-      id: `${schoolYear}-${semester}`,
-      schoolYear: schoolYear,
+      id: `${trainingDay}-${semester}`,
+      trainingDay: trainingDay,
       semester: semester,
       time: schedule.map((item) => item.time),
       event: schedule.map((item) => item.event),
     };
     await saveSchedule(scheduleData);
     setSemester("");
-    setSchoolYear("");
+    setTrainingDay("");
+    setSchedule(
+      scheduleTime.map((time) => ({
+        time: time,
+        event: "",
+      }))
+    );
+   
     params.set("list", "view");
     setSearchParams(params);
   };
   return (
-    <div>
+    <div className=" w-full">
       <CustomTabPanel value={value} index={1}>
+        <div className="w-full px-3 justify-start flex-col items-center ">
         <h2 className='text-[1.5rem]'>Set Schedule</h2>
         <p>Set your course schedule here.</p>
+        </div>
+        <div className="w-full ">
         <Schedule
           scheduleTime={schedule}
           handleScheduleChange={handleScheduleChange}
-          handleSchoolYearChange={handleSchoolYearChange}
+          handleChangeTrainingDay={handleChangeTrainingDay}
           handleSemesterChange={handleSemesterChange}
           semester={semester}
-          schoolYear={schoolYear}
+          trainingDay={trainingDay}
           handleSave={handleSave}
         />
+        </div>
       </CustomTabPanel>
     </div>
   );

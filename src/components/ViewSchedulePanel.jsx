@@ -17,6 +17,7 @@ function ViewSchedulePanel({ value, schedules }) {
       [index]: !prev[index],
     }));
   };
+  console.log(schedules);
   return (
     <div>
       <CustomTabPanel value={value} index={2}>
@@ -33,7 +34,7 @@ function ViewSchedulePanel({ value, schedules }) {
           {schedules.map((schedule, index) => (
             <ListItemButton key={index} onClick={() => handleClick(index)}>
               <ListItemText
-                primary={`${schedule.schoolyear} - ${schedule.semester}`}
+                primary={`${schedule.trainingDay} - ${schedule.semester}`}
               />
               <Collapse in={!!openItems[index]} timeout='auto' unmountOnExit>
                 <List component='div' disablePadding>

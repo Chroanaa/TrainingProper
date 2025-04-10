@@ -4,7 +4,6 @@ import UploadMaterialPanel from "../components/UploadMaterialPanel";
 import SetSchedulePanel from "../components/SetSchedulePanel";
 import ViewSchedulePanel from "../components/ViewSchedulePanel";
 import { getSchedules } from "../../firebase/getSchedules";
-import { useLoaderData } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
 
 function CourseMaterialPreparation() {
@@ -34,10 +33,10 @@ function CourseMaterialPreparation() {
     setValue(newValue);
   };
   return (
-    <div>
+    <div className="grow  ">
       <h1 className='text-[2rem] ml-[1rem]'>Course Material Preparation</h1>
       <div className='flex flex-col  w-full'>
-        <div className='flex flex-col justify-center items-center mt-10'>
+        <div className='flex flex-col justify-center items-center mt-10l'>
           <CoursePrepTabs value={value} handleChange={handleChange} />
           <UploadMaterialPanel value={value} index={0} />
           <SetSchedulePanel value={value} index={1} />

@@ -10,12 +10,12 @@ export const getSchedules = (callback) => {
     (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const schedules = Object.keys(data).map((schoolYear) => {
-          const semesters = data[schoolYear];
+        const schedules = Object.keys(data).map((trainingDay) => {
+          const semesters = data[trainingDay];
           return Object.keys(semesters).map((semester) => {
             const schedule = semesters[semester];
             return {
-              schoolyear: schoolYear,
+              trainingDay: trainingDay,
               semester: semester,
               time: schedule.time,
               event: schedule.event,

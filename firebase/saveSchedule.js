@@ -5,10 +5,10 @@ export async function saveSchedule(schedule) {
   const db = getDatabase(app);
   const scheduleRef = ref(
     db,
-    `schedules/${schedule.schoolYear}/${schedule.semester}`
+    `schedules/${schedule.trainingDay}/${schedule.semester}`
   );
   await set(scheduleRef, {
-    schoolyear: schedule.schoolYear,
+    trainingDay: schedule.trainingDay,
     semester: schedule.semester,
     time: schedule.time,
     event: schedule.event,

@@ -5,9 +5,11 @@ import Home from "../pages/Home";
 
 function HomeLayout() {
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <Header />
-      {<Outlet />}
+      <div className="flex-1 p-3 overflow-y-scroll">
+        {<Outlet />}
+      </div>
     </div>
   );
 }

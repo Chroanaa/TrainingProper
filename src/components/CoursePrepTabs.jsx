@@ -9,7 +9,7 @@ function CoursePrepTabs({ value, setValue, handleChange }) {
     };
   };
   return (
-    <div>
+    <div className="w-full px-3">
       <Box>
         <Tabs
           value={value}
