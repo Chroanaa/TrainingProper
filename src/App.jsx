@@ -15,6 +15,7 @@ import Create from "./pages/Create";
 import TrainingList, { loader as TrainingLoader } from "./pages/TrainingList";
 import ViewDocument, { loader as viewDocLoader } from "./pages/ViewDocument";
 import CourseMaterialPreparation from "./pages/CourseMaterialPreparation";
+import IncidentReport from "./pages/IncidentReport";
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -32,6 +33,7 @@ function App() {
           path='CourseMaterialPrep'
           element={<CourseMaterialPreparation />}
         />
+        <Route path='IncidentReport' element={<IncidentReport />} />
       </Route>
     )
   );

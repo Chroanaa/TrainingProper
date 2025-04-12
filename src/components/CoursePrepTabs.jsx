@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Tab, Tabs } from "@mui/material";
 
-function CoursePrepTabs({ value, setValue, handleChange }) {
+function CoursePrepTabs({ value, handleChange }) {
   const allyProps = (index) => {
     return {
       id: `scrollable-auto-tab-${index}`,
@@ -9,7 +9,7 @@ function CoursePrepTabs({ value, setValue, handleChange }) {
     };
   };
   return (
-    <div className="w-full px-3">
+    <div className='w-full px-3'>
       <Box>
         <Tabs
           value={value}
