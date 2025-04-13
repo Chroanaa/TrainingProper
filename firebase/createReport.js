@@ -7,6 +7,7 @@ export const createReport = async (reportData) => {
   try {
     await set(reportRef, {
       id: reportData.id,
+      title: reportData.title,
       description: reportData.description,
       date: reportData.date,
       createdAt: reportData.createdAt,

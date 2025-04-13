@@ -8,7 +8,6 @@ import {
   Collapse,
   ListItemButton,
 } from "@mui/material";
-import { getSchedules } from "../../firebase/getSchedules";
 function ViewSchedulePanel({ value, schedules }) {
   const [openItems, setOpenItems] = React.useState({});
   const handleClick = (index) => {

@@ -17,6 +17,7 @@ function CreateIncidentReportPanel({ value }) {
   const handleSubmit = () => {
     createReport({
       id: `${report.description}-${report.date}`,
+      title: report.title,
       description: report.description,
       date: report.date,
       createdAt: new Date().toISOString(),
@@ -27,7 +28,11 @@ function CreateIncidentReportPanel({ value }) {
       .catch((error) => {
         console.error("Error submitting report:", error);
       });
-    console.log(report);
+    setReport({
+      description: "",
+      date: "",
+      createdAt: new Date().toISOString(),
+    });
   };
 
   return (
@@ -37,6 +42,16 @@ function CreateIncidentReportPanel({ value }) {
         <p>Fill out the form to create a new incident report.</p>
 
         <div>
+          <label htmlFor='incident-id'>Incident title:</label>
+          <input
+            type='text'
+            name='title'
+            onChange={handleChange}
+            value={report.title || ""}
+            id='incident-title'
+            required
+          />
+
           <label htmlFor='incident-description'>Incident Description:</label>
           <textarea
             id='incident-description'
@@ -45,6 +60,7 @@ function CreateIncidentReportPanel({ value }) {
             cols='50'
             onChange={handleChange}
             value={report.description || ""}
+            required
           ></textarea>
         </div>
         <div>
@@ -55,6 +71,7 @@ function CreateIncidentReportPanel({ value }) {
             onChange={handleChange}
             value={report.date || ""}
             id='incident-date'
+            required
           />
         </div>
         <button type='submit' onClick={handleSubmit}>
