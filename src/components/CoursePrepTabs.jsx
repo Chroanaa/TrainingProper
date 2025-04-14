@@ -18,7 +18,7 @@ function CoursePrepTabs({ value, handleChange }) {
           allowScrollButtonsMobile
           onChange={handleChange}
         >
-          <Tab label='Upload Material' {...allyProps(0)} />
+          <Tab label='Create POI' {...allyProps(0)} />
           <Tab label='Set Schedule' {...allyProps(1)} />
           <Tab label='View Schedules' {...allyProps(2)} />
         </Tabs>

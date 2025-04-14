@@ -5,7 +5,7 @@ import { ref, set, getDatabase } from "firebase/database";
 
 export async function insert(document) {
   const db = getDatabase(app);
-  await set(ref(db, "documents/" + document.id), {
+  await set(ref(db, "ATR/" + document.id), {
     id: document.id,
     title: document.title,
     content: document.content,

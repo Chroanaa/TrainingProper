@@ -1,6 +1,6 @@
 import React from "react";
 import CoursePrepTabs from "../components/CoursePrepTabs";
-import UploadMaterialPanel from "../components/UploadMaterialPanel";
+import CreatePOI from "../components/CreatePOI";
 import SetSchedulePanel from "../components/SetSchedulePanel";
 import ViewSchedulePanel from "../components/ViewSchedulePanel";
 import { getSchedules } from "../../firebase/getSchedules";
@@ -33,12 +33,12 @@ function CourseMaterialPreparation() {
     setValue(newValue);
   };
   return (
-    <div className="grow  ">
+    <div className='grow  '>
       <h1 className='text-[2rem] ml-[1rem]'>Course Material Preparation</h1>
       <div className='flex flex-col  w-full'>
         <div className='flex flex-col justify-center items-center mt-10l'>
           <CoursePrepTabs value={value} handleChange={handleChange} />
-          <UploadMaterialPanel value={value} index={0} />
+          <CreatePOI value={value} index={0} />
           <SetSchedulePanel value={value} index={1} />
           <ViewSchedulePanel value={value} index={2} schedules={schedules} />
         </div>

@@ -28,12 +28,7 @@ function Header() {
         >
           COURSE MATERIAL PREPARATION
         </NavLink>
-        <NavLink
-          className='text-[0.7rem] text-white hover:text-[#FFD700]'
-          style={currentLink}
-        >
-          EVENT DEPLOYMENT REVIEW
-        </NavLink>
+
         <NavLink
           className='text-[0.7rem] text-white hover:text-[#FFD700]'
           style={currentLink}
@@ -41,7 +36,11 @@ function Header() {
         >
           TRAINING PROGRAM
         </NavLink>
-        <NavLink className='text-[0.7rem] text-white hover:text-[#FFD700]'>
+        <NavLink
+          to={"/TrainingReport"}
+          style={currentLink}
+          className='text-[0.7rem] text-white hover:text-[#FFD700]'
+        >
           TRAINING REPORT
         </NavLink>
         <NavLink
