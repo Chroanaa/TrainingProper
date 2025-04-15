@@ -1,8 +1,8 @@
 import React from "react";
-import { fetchDocuments } from "../../firebase/fetchDocuments";
+import { fetchPOIS } from "../../firebase/fetchPOIS";
 import { NavLink, useLoaderData } from "react-router-dom";
 export async function loader() {
-  const documents = await fetchDocuments();
+  const documents = await fetchPOIS();
   return documents;
 }
 function TrainingList() {

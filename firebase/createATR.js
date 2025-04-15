@@ -1,6 +1,4 @@
-import React from "react";
 import app from "../config/firebase.js";
-import { useNavigate } from "react-router-dom";
 import { ref, set, getDatabase } from "firebase/database";
 
 export async function insert(document) {

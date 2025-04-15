@@ -1,5 +1,5 @@
 import React from "react";
-import { insert } from "../../firebase/createDocument";
+import { insert } from "../../firebase/createATR";
 import { generateId } from "../utils/generateId";
 import { useNavigate } from "react-router-dom";
 import QuillComponent from "../components/Quill";

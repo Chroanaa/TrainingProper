@@ -36,7 +36,7 @@ function CourseMaterialPreparation() {
     <div className='grow  '>
       <h1 className='text-[2rem] ml-[1rem]'>Course Material Preparation</h1>
       <div className='flex flex-col  w-full'>
-        <div className='flex flex-col justify-center items-center mt-10l'>
+        <div className='flex flex-col justify-center items-center mt-10'>
           <CoursePrepTabs value={value} handleChange={handleChange} />
           <CreatePOI value={value} index={0} />
           <SetSchedulePanel value={value} index={1} />

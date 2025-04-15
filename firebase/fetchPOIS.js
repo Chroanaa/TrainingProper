@@ -1,8 +1,8 @@
 import { get, getDatabase, ref } from "firebase/database";
 import app from "../config/firebase.js";
 const db = getDatabase(app);
-export const fetchDocuments = async () => {
-  const dbRef = ref(db, "documents/");
+export const fetchPOIS = async () => {
+  const dbRef = ref(db, "POI/");
   const snapshot = await get(dbRef);
   if (snapshot.exists()) {
     const data = snapshot.val();
