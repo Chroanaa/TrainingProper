@@ -2,7 +2,6 @@ import React from "react";
 import CustomTabPanel from "./CustomTabPanel";
 import AccordionExpand from "./ui/AccordionExpand";
 function ReportListPanel({ value, reports }) {
-  console.log(reports);
   return (
     <div>
       <CustomTabPanel value={value} index={0}>

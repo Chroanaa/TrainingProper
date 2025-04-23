@@ -35,6 +35,9 @@ function QuillComponent(props, ref) {
     setHtml: (html) => {
       quillInstanceRef.current.root.innerHTML = html;
     },
+    getContents: () => {
+      return quillInstanceRef.current.getContents();
+    },
   }));
   return <div ref={editorRef} className='quill-editor'></div>;
 }

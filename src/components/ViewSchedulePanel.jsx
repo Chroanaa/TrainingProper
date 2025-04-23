@@ -16,7 +16,6 @@ function ViewSchedulePanel({ value, schedules }) {
       [index]: !prev[index],
     }));
   };
-  console.log(schedules);
   return (
     <div>
       <CustomTabPanel value={value} index={2}>

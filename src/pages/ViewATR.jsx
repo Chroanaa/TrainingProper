@@ -1,40 +1,37 @@
 import React from "react";
-import { useLoaderData, useParams } from "react-router-dom";
-import { viewPOI } from "../../firebase/viewPOI";
+import { viewATR } from "../../firebase/viewATR";
 import QuillComponent from "../components/Quill";
-import { updatePOI } from "../../firebase/updatePOI";
-import { useNavigate } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
+import { updateATR } from "../../firebase/updateATR";
 import { Button } from "@mui/material";
 import { saveAs } from "file-saver";
 import { pdfExporter } from "quill-to-pdf";
 export async function loader({ params }) {
   const { id } = params;
-  const document = await viewPOI(id);
-  return document;
+  const data = await viewATR(id);
+  return data;
 }
-
-function ViewPOI() {
-  const { content, id, title } = useLoaderData();
-  const [newTitle, setNewTitle] = React.useState(title);
-  const quillRef = React.useRef(null);
-  const navigate = useNavigate();
+function ViewATR() {
+  const data = useLoaderData();
+  const [newTitle, setNewTitle] = React.useState(data.title);
   const handleOnChange = (e) => {
     setNewTitle(e.target.value);
   };
+  const quillRef = React.useRef(null);
   React.useEffect(() => {
     if (quillRef.current) {
-      quillRef.current?.setHtml(content);
+      quillRef.current?.setHtml(data.content);
     }
   }, []);
-  const handleOnSave = async () => {
-    const content = quillRef.current.getHtml();
-    const data = {
-      id: id,
+  const handleSave = async () => {
+    const content = quillRef.current?.getHtml();
+    const updatedData = {
       title: newTitle,
+      createdAt: data.createdAt,
       content: content,
+      updatedAt: new Date().toISOString(),
     };
-    await updatePOI(id, data);
-    navigate("/List");
+    await updateATR(data.id, updatedData);
   };
   const handleDownload = async () => {
     const quill = quillRef.current;
@@ -50,15 +47,15 @@ function ViewPOI() {
   return (
     <div>
       <input type='text' value={newTitle} onChange={handleOnChange} />
-      <Button variant='contained' onClick={handleOnSave}>
+      <Button variant='contained' onClick={handleSave}>
         Save
       </Button>
       <Button variant='contained' onClick={handleDownload}>
-        Download
+        Download as PDF
       </Button>
       <QuillComponent ref={quillRef} />
     </div>
   );
 }
 
-export default ViewPOI;
+export default ViewATR;
