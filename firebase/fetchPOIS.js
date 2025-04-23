@@ -1,15 +1,20 @@
-import { get, getDatabase, ref } from "firebase/database";
-import app from "../config/firebase.js";
-const db = getDatabase(app);
-export const fetchPOIS = async () => {
-  const dbRef = ref(db, "POI/");
-  const snapshot = await get(dbRef);
-  if (snapshot.exists()) {
+import app from "../config/firebase";
+import { getDatabase, onValue, off, ref } from "firebase/database";
+
+export const fetchPOIS = async (callback) => {
+  const db = getDatabase(app);
+  const atrRef = ref(db, "POI/");
+  const listener = onValue(atrRef, (snapshot) => {
     const data = snapshot.val();
-    const documents = Object.values(data || {});
-    return documents;
-  } else {
-    console.log("No data available");
-    return null;
-  }
+    if (data) {
+      const atr = Object.values(data || {});
+      callback(atr.flat());
+    } else {
+      callback([]);
+    }
+  });
+
+  return () => {
+    off(atrRef);
+  };
 };

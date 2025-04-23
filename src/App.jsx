@@ -9,7 +9,7 @@ import HomeLayout from "./layout/HomeLayout"; // Corrected import
 import Home from "./pages/Home"; // Corrected import
 import SendDocument from "./pages/SendDocument";
 import Create from "./pages/Create";
-import TrainingList, { loader as TrainingLoader } from "./pages/TrainingList";
+import TrainingList from "./pages/TrainingList";
 import ViewPOI, { loader as poiLoader } from "./pages/ViewPOI";
 import CourseMaterialPreparation from "./pages/CourseMaterialPreparation";
 import IncidentReport from "./pages/IncidentReport";
@@ -22,7 +22,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path='SendDocument' element={<SendDocument />} />
         <Route path='Create' element={<Create />} />
-        <Route path='List' element={<TrainingList />} loader={TrainingLoader} />
+        <Route path='List' element={<TrainingList />} />
         <Route path='List/:id' element={<ViewPOI />} loader={poiLoader} />
         <Route
           path='CourseMaterialPrep'

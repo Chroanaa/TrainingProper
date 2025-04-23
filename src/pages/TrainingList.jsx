@@ -1,12 +1,25 @@
 import React from "react";
 import { fetchPOIS } from "../../firebase/fetchPOIS";
-import { NavLink, useLoaderData } from "react-router-dom";
-export async function loader() {
-  const documents = await fetchPOIS();
-  return documents;
-}
+import { NavLink } from "react-router-dom";
+import { Button } from "@mui/material";
+import { deletePOI } from "../../firebase/deletePOI";
 function TrainingList() {
-  const fetchedDocuments = useLoaderData();
+  const [fetchedDocuments, setFetchedDocuments] = React.useState([]);
+  React.useEffect(() => {
+    const unsubscribe = fetchPOIS((data) => {
+      setFetchedDocuments(data);
+    });
+    console.log(fetchedDocuments);
+  }, []);
+  const handleDelete = async (id) => {
+    try {
+      await deletePOI(id);
+      console.log("Document deleted successfully");
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
+  };
+
   return (
     <div>
       <h1 className='text-2xl font-bold text-blue-500'>Training List</h1>
@@ -20,6 +33,12 @@ function TrainingList() {
               >
                 {document.title}
               </NavLink>
+              <Button
+                variant='outlined'
+                onClick={() => handleDelete(document.id)}
+              >
+                Delete
+              </Button>
             </li>
           ))
         ) : (

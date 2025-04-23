@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { getAllATR } from "../../firebase/getAllATR";
+import { deleteATR } from "../../firebase/deleteATR";
 import { useNavigate } from "react-router";
 function TrainingReport() {
   const navigate = useNavigate();
@@ -20,6 +21,15 @@ function TrainingReport() {
   }, []);
   const handleClickView = (id) => {
     navigate(`/TrainingReport/${id}`);
+  };
+  const handleDelete = (id) => {
+    deleteATR(id)
+      .then(() => {
+        console.log("ATR deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Error deleting ATR:", error);
+      });
   };
   return (
     <div>
@@ -50,7 +60,7 @@ function TrainingReport() {
         >
           <h3>{item.title}</h3>
           <button onClick={() => handleClickView(item.id)}>view</button>
-          <button>delete</button>
+          <button onClick={() => handleDelete(item.id)}>delete</button>
         </Box>
       ))}
     </div>
