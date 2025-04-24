@@ -43,17 +43,19 @@ function UploadMaterialPanel({ value, index }) {
     saveAs(pdfBlob, `${title}.pdf`);
   };
   return (
-    <div>
+    <div className=' p-4 container'>
       <CustomTabPanel value={value} index={0}>
         <input type='text' value={title} onChange={handleOnChange} />
-
+        <QuillComponent ref={quillRef} />
+        <div class="gap-3 rounded-lg p-4 flex justify-end">
         <Button variant='contained' onClick={handleSave}>
           Save
         </Button>
         <Button variant='contained' onClick={handleDownload}>
           Download
         </Button>
-        <QuillComponent ref={quillRef} />
+        </div>  
+
       </CustomTabPanel>
     </div>
   );
