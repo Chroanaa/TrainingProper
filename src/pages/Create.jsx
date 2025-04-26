@@ -4,6 +4,8 @@ import { generateId } from "../utils/generateId";
 import { useNavigate } from "react-router-dom";
 import QuillComponent from "../components/Quill";
 import { Button } from "@mui/material";
+import { saveAs } from "file-saver";
+import { pdfExporter } from "quill-to-pdf";
 function Create() {
   const navigate = useNavigate();
   const [title, setTitle] = React.useState("Untitled");
@@ -24,12 +26,26 @@ function Create() {
   const handleOnChange = (e) => {
     setTitle(e.target.value);
   };
+  const handleDownload = async () => {
+    const quill = quillRef.current;
+    const html = quill.getContents();
+    const pdfBlob = await pdfExporter.generatePdf(html, {
+      filename: `${title}.pdf`,
+      margin: 10,
+      pageSize: "A4",
+      pageOrientation: "portrait",
+    });
+    saveAs(pdfBlob, `${title}.pdf`);
+  };
   return (
     <div>
       <input type='text' value={title} onChange={handleOnChange} />
       <Button variant='contained' type='submit' onClick={handleSave}>
         Save
       </Button>
+      <Button variant="contained" onClick={() => handleDownload()}>
+        Download
+        </Button>
       <QuillComponent content={""} ref={quillRef} />
     </div>
   );

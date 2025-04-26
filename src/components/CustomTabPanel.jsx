@@ -4,6 +4,7 @@ function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
     <div
+      class='border-2 border-gray-300 rounded-lg p-4 container '
       role='tabpanel'
       hidden={value !== index}
       id={`scrollable-auto-tabpanel-${index}`}
@@ -11,7 +12,7 @@ function CustomTabPanel(props) {
       {...other}
     >
       {value === index && (
-        <div className='flex flex-col justify-center items-center mt-10'>
+        <div className='flex flex-col'>
           {children}
         </div>
       )}

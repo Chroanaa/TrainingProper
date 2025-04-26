@@ -48,30 +48,18 @@ function UploadMaterialPanel({ value, index }) {
     saveAs(pdfBlob, `${title}.pdf`);
   };
   return (
-    <div>
+    <div className=' p-4 container'>
       <CustomTabPanel value={value} index={0}>
         <input type='text' value={title} onChange={handleOnChange} />
-        <FormControl>
-          <InputLabel id='demo-simple-select-outlined-label'>
-            Get schedule for the semester
-          </InputLabel>
-          <Select
-            value={semester || ""}
-            className='w-[200px]'
-            onChange={(event) => handleGetSemester(event.target.value)}
-            label='Select Semester'
-          >
-            <MenuItem>1st Semester</MenuItem>
-            <MenuItem>2nd Semester</MenuItem>
-          </Select>
-        </FormControl>
-        <Button variant='contained' onClick={handleSave}>
-          Save
-        </Button>
-        <Button variant='contained' onClick={handleDownload}>
-          Download
-        </Button>
         <QuillComponent ref={quillRef} />
+        <div class='gap-3 rounded-lg p-4 flex justify-end'>
+          <Button variant='contained' onClick={handleSave}>
+            Save
+          </Button>
+          <Button variant='contained' onClick={handleDownload}>
+            Download
+          </Button>
+        </div>
       </CustomTabPanel>
     </div>
   );
