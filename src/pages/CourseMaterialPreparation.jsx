@@ -35,6 +35,7 @@ function CourseMaterialPreparation() {
   return (
     <div className='grow  '>
       <h1 className='text-[2rem] ml-[1rem]'>Course Material Preparation</h1>
+
       <div className='flex flex-col  w-full'>
         <div className='flex flex-col justify-center items-center mt-10'>
           <CoursePrepTabs value={value} handleChange={handleChange} />

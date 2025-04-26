@@ -6,13 +6,12 @@ import CustomTabPanel from "./CustomTabPanel";
 import { useSearchParams } from "react-router";
 function SetSchedulePanel({ value, index }) {
   const scheduleTime = [
-    "6:00 AM",
-    "7:00 AM",
-    "8:00 AM",
-    "9:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "12:00 PM",
+    "6:00 AM - 7:00 AM",
+    "7:00 AM - 8:00 AM",
+    "8:00 AM - 9:00 AM",
+    "9:00 AM - 10:00 AM",
+    "10:00 AM - 11:00 AM",
+    "11:00 AM - 12:00 PM",
   ];
   const [schedule, setSchedule] = React.useState(
     scheduleTime.map((time) => ({
@@ -56,27 +55,27 @@ function SetSchedulePanel({ value, index }) {
         event: "",
       }))
     );
-   
+
     params.set("list", "view");
     setSearchParams(params);
   };
   return (
-    <div className=" w-full">
+    <div className=' w-full'>
       <CustomTabPanel value={value} index={1}>
-        <div className="w-full px-3 justify-start flex-col items-center ">
-        <h2 className='text-[1.5rem]'>Set Schedule</h2>
-        <p>Set your course schedule here.</p>
+        <div className='w-full px-3 justify-start flex-col items-center '>
+          <h2 className='text-[1.5rem]'>Set Schedule</h2>
+          <p>Set your course schedule here.</p>
         </div>
-        <div className="w-full ">
-        <Schedule
-          scheduleTime={schedule}
-          handleScheduleChange={handleScheduleChange}
-          handleChangeTrainingDay={handleChangeTrainingDay}
-          handleSemesterChange={handleSemesterChange}
-          semester={semester}
-          trainingDay={trainingDay}
-          handleSave={handleSave}
-        />
+        <div className='w-full '>
+          <Schedule
+            scheduleTime={schedule}
+            handleScheduleChange={handleScheduleChange}
+            handleChangeTrainingDay={handleChangeTrainingDay}
+            handleSemesterChange={handleSemesterChange}
+            semester={semester}
+            trainingDay={trainingDay}
+            handleSave={handleSave}
+          />
         </div>
       </CustomTabPanel>
     </div>
