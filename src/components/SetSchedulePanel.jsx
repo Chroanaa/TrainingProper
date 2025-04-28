@@ -61,9 +61,9 @@ function SetSchedulePanel({ value, index }) {
     setSearchParams(params);
   };
   return (
-    <div className=" w-full">
+    <div className=" w-full rounded-lg">
       <CustomTabPanel value={value} index={1}>
-        <div className="w-full px-3 justify-start flex-col items-center ">
+        <div className="w-ful px-3 justify-start flex-col items-center border-0 ">
         <h2 className='text-[1.5rem]'>Set Schedule</h2>
         <p>Set your course schedule here.</p>
         </div>
