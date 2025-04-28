@@ -79,22 +79,8 @@ function UploadMaterialPanel({ value, index }) {
     <div className=' p-4 container'>
       <CustomTabPanel value={value} index={0}>
         <input type='text' value={title} onChange={handleOnChange} />
-        <FormControl fullWidth variant='outlined' className='mb-4'>
-          <InputLabel id='semester-label'>Get schedules</InputLabel>
-          <Select
-            labelId='semester-label'
-            id='semester-select'
-            value={semester}
-            onChange={handleGetSemester}
-            label='Get schedules'
-          >
-            <MenuItem value={"1st Semester"}>1st Semester</MenuItem>
-            <MenuItem value={"2nd Semester"}>2nd Semester</MenuItem>
-          </Select>
-          <Button onClick={() => handleGetSchedule()}>Get Schedule</Button>
-        </FormControl>
         <QuillComponent ref={quillRef} />
-        <div className='gap-3 rounded-lg p-4 flex justify-end'>
+        <div class='gap-3 rounded-lg p-4 flex justify-end'>
           <Button variant='contained' onClick={handleSave}>
             Save
           </Button>
@@ -102,7 +88,6 @@ function UploadMaterialPanel({ value, index }) {
             Download
           </Button>
         </div>
-        {renderSchedule(schedule)}
       </CustomTabPanel>
     </div>
   );

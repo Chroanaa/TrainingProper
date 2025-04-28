@@ -22,7 +22,7 @@ function TrainingList() {
 
   return (
     <div>
-      <h1 className='text-2xl font-bold text-blue-500'>Training List</h1>
+      <h1 className='text-[2rem] ml-[1rem]'>Training List</h1>
       <ul className='list-disc'>
         {fetchedDocuments ? (
           fetchedDocuments.map((document, index) => (

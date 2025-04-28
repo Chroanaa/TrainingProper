@@ -36,6 +36,7 @@ function App() {
           loader={viewAtrLoader}
         />
       </Route>
+  
     )
   );
 

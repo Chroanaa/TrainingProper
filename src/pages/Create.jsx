@@ -39,14 +39,28 @@ function Create() {
   };
   return (
     <div>
-      <input type='text' value={title} onChange={handleOnChange} />
-      <Button variant='contained' type='submit' onClick={handleSave}>
+      <h1 className='text-[2rem] mb-[1rem]'>Report Creation</h1>
+
+      <div class="rounded p-4 shadow-md">
+      <input 
+        type='text' 
+        value={title} 
+        onChange={handleOnChange}
+        class="border border-gray-300 rounded p-2 mb-2 w-full"
+        />
+
+     
+      <QuillComponent content={""} ref={quillRef} />
+
+      <div class="mt-2 gap-1 flex flex-row justify-end">
+      <Button variant='contained' class="bg-[#556B2F] text-white px-5 p-2 rounded-b-sm" type='submit' onClick={handleSave}>
         Save
       </Button>
-      <Button variant="contained" onClick={() => handleDownload()}>
+      <Button variant="contained" class="bg-[#2C2C2C]  text-white px-5 rounded-b-sm" onClick={() => handleDownload()}>
         Download
         </Button>
-      <QuillComponent content={""} ref={quillRef} />
+        </div>
+        </div>  
     </div>
   );
 }
