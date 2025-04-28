@@ -17,31 +17,45 @@ function UploadMaterialPanel({ value, index }) {
   const [title, setTitle] = React.useState("Untitled");
   const [semester, setSemester] = React.useState("");
   const [schedule, setSchedule] = React.useState([]);
-
+  React.useEffect(() => {
+    console.log(schedule);
+  }, [schedule]);
   const handleOnChange = (e) => {
     setTitle(e.target.value);
   };
   const handleGetSemester = (e) => {
     setSemester(e.target.value);
   };
+
   const handleGetSchedule = async () => {
-    const schedule = await getSchedule(semester);
-    const data = Object.keys(schedule).map((key) => {
-      const values = Object.values(schedule[key]);
-      setSchedule(values);
-    });
+    const data = await getSchedule(semester);
+
+    if (!data) {
+      quillRef.current?.setHtml("<h2>No Schedule Available</h2>");
+      return;
+    }
+    const schedules = Object.values(data);
+    setSchedule(schedules);
+    renderSchedule(schedules);
   };
   const renderSchedule = (schedule) => {
-    if (schedule.length === 0) return null;
-    const times = schedule[2] || [];
-    const events = schedule[0] || [];
-    let scheduleHtml = "<h2>Schedules:</h2>";
-    for (let i = 0; i < Math.max(times.length, events.length); i++) {
-      const time = times[i] || "No Time Available";
-      const event = events[i] || "No Event Available";
-      scheduleHtml += `<p>${time}: ${event}</p>`;
+    if (!schedule) {
+      quillRef.current?.setHtml("<h2>No Schedule Available</h2>");
+      return;
     }
-    quillRef.current?.setHtml(scheduleHtml);
+    let scheduleHtml = "<h2>Schedule</h2>";
+    console.log(schedule);
+    for (let i = 0; i < schedule.length; i++) {
+      const scheduleData = schedule[i];
+      scheduleHtml += `
+      <h3>${scheduleData.trainingDay}</h3>`;
+      const times = scheduleData.time;
+      const event = scheduleData.event;
+      for (let j = 0; j < times.length; j++) {
+        scheduleHtml += `<h4>${times[j]}: ${event[j]}</h4>`;
+      }
+      quillRef.current?.setHtml(scheduleHtml);
+    }
   };
   const handleSave = () => {
     const content = quillRef.current?.getHtml();
@@ -99,7 +113,6 @@ function UploadMaterialPanel({ value, index }) {
             Download
           </Button>
         </div>
-        {renderSchedule(schedule)}
       </CustomTabPanel>
     </div>
   );
