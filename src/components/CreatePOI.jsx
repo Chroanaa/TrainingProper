@@ -45,13 +45,17 @@ function UploadMaterialPanel({ value, index }) {
   return (
     <div className=' p-4 container'>
       <CustomTabPanel value={value} index={0}>
-        <input type='text' value={title} onChange={handleOnChange} />
+        <input 
+          class="border border-gray-300 rounded p-2 mb-2 w-full"
+          type='text' 
+          value={title} 
+          onChange={handleOnChange} />
         <QuillComponent ref={quillRef} />
-        <div class="gap-3 rounded-lg p-4 flex justify-end">
-        <Button variant='contained' onClick={handleSave}>
+        <div class="gap-1 rounded-lg p-4 flex justify-end">
+        <Button class="bg-[#556B2F] text-white px-5 p-2 rounded-b-sm" variant='contained' onClick={handleSave}>
           Save
         </Button>
-        <Button variant='contained' onClick={handleDownload}>
+        <Button  class="bg-[#2C2C2C]  text-white px-5 rounded-b-sm" variant='contained' onClick={handleDownload}>
           Download
         </Button>
         </div>  

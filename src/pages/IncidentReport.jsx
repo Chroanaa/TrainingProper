@@ -17,6 +17,8 @@ function IncidentReport() {
   };
   return (
     <div>
+      <h1 className='text-[2rem] ml-[1rem]'>Incident Report</h1>
+
       <IncidentReportTabs value={value} handleChange={handleChange} />
       <div className='flex flex-col gap-2'>
         <CreateIncidentReportPanel value={value} />

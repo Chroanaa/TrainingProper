@@ -33,9 +33,10 @@ function TrainingReport() {
   };
   return (
     <div>
+      <h1 className='text-[2rem] mb-3'>Training Report</h1>
       <FormControl fullWidth>
         <InputLabel id='demo-simple-select-label'>Filter</InputLabel>
-        <Select
+        <Select 
           labelId='demo-simple-select-label'
           id='demo-simple-select'
           value={filter || ""}
