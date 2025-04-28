@@ -17,7 +17,7 @@ function ViewSchedulePanel({ value, schedules }) {
     }));
   };
   return (
-    <div class="w-full">
+    <div className='w-full'>
       <CustomTabPanel value={value} index={2}>
         <List
           sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}

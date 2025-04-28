@@ -19,6 +19,12 @@ function QuillComponent(props, ref) {
           ["bold", "italic", "underline"],
           ["image", "code-block"],
           ["clean"],
+          ["link"],
+          [{ list: "ordered" }, { list: "bullet" }], // More explicit list configuration
+          [{ align: [] }],
+          [{ color: [] }, { background: [] }],
+          ["align"],
+          ["color", "background"],
         ],
         resize: {
           locale: {

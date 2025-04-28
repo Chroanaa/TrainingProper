@@ -9,7 +9,6 @@ import { pdfExporter } from "quill-to-pdf";
 import { useNavigate } from "react-router";
 import { Select, FormControl, InputLabel, MenuItem } from "@mui/material";
 import { getSchedule } from "../../firebase/getSchedule";
-import { set } from "firebase/database";
 
 function UploadMaterialPanel({ value, index }) {
   const navigate = useNavigate();
@@ -18,9 +17,7 @@ function UploadMaterialPanel({ value, index }) {
   const [title, setTitle] = React.useState("Untitled");
   const [semester, setSemester] = React.useState("");
   const [schedule, setSchedule] = React.useState([]);
-  React.useEffect(() => {
-    console.log(semester);
-  }, [semester]);
+
   const handleOnChange = (e) => {
     setTitle(e.target.value);
   };
@@ -35,18 +32,16 @@ function UploadMaterialPanel({ value, index }) {
     });
   };
   const renderSchedule = (schedule) => {
-    const event = schedule[0];
-    const semester = schedule[1];
-    const time = schedule[2];
-    const trainingDay = schedule[3];
-    return (
-      <div className='schedule-container'>
-        <div>{schedule[0]}</div>
-        <div>{schedule[1]}</div>
-        <div>{schedule[2]}</div>
-        <div>{schedule[3]}</div>
-      </div>
-    );
+    if (schedule.length === 0) return null;
+    const times = schedule[2] || [];
+    const events = schedule[0] || [];
+    let scheduleHtml = "<h2>Schedules:</h2>";
+    for (let i = 0; i < Math.max(times.length, events.length); i++) {
+      const time = times[i] || "No Time Available";
+      const event = events[i] || "No Event Available";
+      scheduleHtml += `<p>${time}: ${event}</p>`;
+    }
+    quillRef.current?.setHtml(scheduleHtml);
   };
   const handleSave = () => {
     const content = quillRef.current?.getHtml();
@@ -79,15 +74,32 @@ function UploadMaterialPanel({ value, index }) {
     <div className=' p-4 container'>
       <CustomTabPanel value={value} index={0}>
         <input type='text' value={title} onChange={handleOnChange} />
+        <FormControl fullWidth>
+          <InputLabel id='semester-select-label'>Semester</InputLabel>
+          <Select
+            labelId='semester-select-label'
+            id='semester-select'
+            value={semester}
+            label='Semester'
+            onChange={handleGetSemester}
+          >
+            <MenuItem value={"1st Semester"}>1st Semester</MenuItem>
+            <MenuItem value={"2nd Semester"}>2nd Semester</MenuItem>
+          </Select>
+        </FormControl>
         <QuillComponent ref={quillRef} />
-        <div class='gap-3 rounded-lg p-4 flex justify-end'>
+        <div className='gap-3 rounded-lg p-4 flex justify-end'>
           <Button variant='contained' onClick={handleSave}>
             Save
+          </Button>
+          <Button variant='contained' onClick={handleGetSchedule}>
+            Get Schedules
           </Button>
           <Button variant='contained' onClick={handleDownload}>
             Download
           </Button>
         </div>
+        {renderSchedule(schedule)}
       </CustomTabPanel>
     </div>
   );
