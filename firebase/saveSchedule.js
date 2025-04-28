@@ -5,7 +5,7 @@ export async function saveSchedule(schedule) {
   const db = getDatabase(app);
   const scheduleRef = ref(
     db,
-    `schedules/${schedule.trainingDay}/${schedule.semester}`
+    `schedules/${schedule.semester}/${schedule.trainingDay}`
   );
   await set(scheduleRef, {
     trainingDay: schedule.trainingDay,
