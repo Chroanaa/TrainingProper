@@ -1,7 +1,8 @@
 import React from "react";
 import { Button, FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
-
+import { useContext } from "react";
+import { SchedulesContext } from "../pages/CourseMaterialPreparation";
 function Schedule({
   handleScheduleChange,
   scheduleTime,
@@ -28,6 +29,9 @@ function Schedule({
     "14th training day",
     "15th  training day",
   ];
+  const schedules = useContext(SchedulesContext);
+  const [disabled, setDisabled] = React.useState(true);
+
   return (
     <div>
       <div className='flex justify-start align items-center gap-2 px-3 py-2'>
@@ -40,9 +44,18 @@ function Schedule({
             value={trainingDay || ""}
             label='Select Semester'
             onChange={(event) => handleChangeTrainingDay(event.target.value)}
+            disabled={disabled}
           >
             {trainingDays.map((day, index) => (
-              <MenuItem value={day} key={index}>
+              <MenuItem
+                key={index}
+                value={day}
+                disabled={schedules.some(
+                  (schedule) =>
+                    schedule.semester === day &&
+                    schedule.trainingDay === semester
+                )}
+              >
                 {day}
               </MenuItem>
             ))}
@@ -57,7 +70,10 @@ function Schedule({
             className='w-[200px]'
             value={semester || ""}
             label='Select Semester'
-            onChange={(event) => handleSemesterChange(event.target.value)}
+            onChange={(event) => {
+              handleSemesterChange(event.target.value);
+              setDisabled(false);
+            }}
           >
             <MenuItem value={"1st Semester"}>1st Semester</MenuItem>
             <MenuItem value={"2nd Semester"}>2nd Semester</MenuItem>

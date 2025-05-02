@@ -4,6 +4,8 @@ import { saveSchedule } from "../../firebase/saveSchedule";
 import Alert from "@mui/material/Alert";
 import CustomTabPanel from "./CustomTabPanel";
 import { useSearchParams } from "react-router";
+import { useContext } from "react";
+import { SchedulesContext } from "../pages/CourseMaterialPreparation";
 function SetSchedulePanel({ value, index }) {
   const scheduleTime = [
     "6:00 AM - 7:00 AM",
@@ -23,10 +25,6 @@ function SetSchedulePanel({ value, index }) {
   const params = new URLSearchParams(window.location.search);
   const [semester, setSemester] = React.useState();
   const [trainingDay, setTrainingDay] = React.useState();
-  React.useEffect(() => {}, [semester]);
-
-  React.useEffect(() => {}, [trainingDay]);
-
   const handleScheduleChange = (index, event) => {
     const newSchedule = [...schedule];
     newSchedule[index].event = event.target.value;

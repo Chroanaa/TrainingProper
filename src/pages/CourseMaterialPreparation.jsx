@@ -5,7 +5,8 @@ import SetSchedulePanel from "../components/SetSchedulePanel";
 import ViewSchedulePanel from "../components/ViewSchedulePanel";
 import { getSchedules } from "../../firebase/getSchedules";
 import { useSearchParams } from "react-router-dom";
-
+import { createContext } from "react";
+export const SchedulesContext = createContext();
 function CourseMaterialPreparation() {
   const params = new URLSearchParams(window.location.search);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,10 +39,12 @@ function CourseMaterialPreparation() {
 
       <div className='flex flex-col  w-full'>
         <div className='flex flex-col justify-center items-center mt-10'>
-          <CoursePrepTabs value={value} handleChange={handleChange} />
-          <CreatePOI value={value} index={0} />
-          <SetSchedulePanel value={value} index={1} />
-          <ViewSchedulePanel value={value} index={2} schedules={schedules} />
+          <SchedulesContext.Provider value={schedules}>
+            <CoursePrepTabs value={value} handleChange={handleChange} />
+            <CreatePOI value={value} index={0} />
+            <SetSchedulePanel value={value} index={1} />
+            <ViewSchedulePanel value={value} index={2} schedules={schedules} />
+          </SchedulesContext.Provider>
         </div>
       </div>
     </div>
