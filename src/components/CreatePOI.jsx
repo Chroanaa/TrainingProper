@@ -39,22 +39,35 @@ function UploadMaterialPanel({ value, index }) {
     renderSchedule(schedules);
   };
   const renderSchedule = (schedule) => {
-    if (!schedule) {
+    if (!schedule || !quillRef.current?.quill) {
       quillRef.current?.setHtml("<h2>No Schedule Available</h2>");
       return;
     }
-    let scheduleHtml = "<h2>Schedule</h2>";
-    console.log(schedule);
+
+    quillRef.current.quill.deleteText(0, quillRef.current.quill.getLength());
+
+    quillRef.current.quill.insertText(0, "Schedule", { header: 2 });
+    let insertIndex = quillRef.current.quill.getLength();
+
     for (let i = 0; i < schedule.length; i++) {
       const scheduleData = schedule[i];
-      scheduleHtml += `
-      <h3>${scheduleData.trainingDay}</h3>`;
+      quillRef.current.quill.insertText(
+        insertIndex,
+        `\n${scheduleData.trainingDay}`,
+        { header: 3 }
+      );
+      insertIndex = quillRef.current.quill.getLength();
+
       const times = scheduleData.time;
       const event = scheduleData.event;
       for (let j = 0; j < times.length; j++) {
-        scheduleHtml += `<h4>${times[j]}: ${event[j]}</h4>`;
+        quillRef.current.quill.insertText(
+          insertIndex,
+          `\n${times[j]}: ${event[j]}`,
+          { header: 4 }
+        );
+        insertIndex = quillRef.current.quill.getLength();
       }
-      quillRef.current?.setHtml(scheduleHtml);
     }
   };
   const handleSave = () => {
@@ -74,15 +87,22 @@ function UploadMaterialPanel({ value, index }) {
     navigate("/List");
   };
   const handleDownload = async () => {
-    const quill = quillRef.current;
-    const html = quill.getContents();
-    const pdfBlob = await pdfExporter.generatePdf(html, {
-      filename: `${title}.pdf`,
-      margin: 10,
-      pageSize: "A4",
-      pageOrientation: "portrait",
-    });
-    saveAs(pdfBlob, `${title}.pdf`);
+    const quillRef1 = quillRef.current;
+
+    if (quillRef1) {
+      const delta = quillRef1.getContents();
+      console.log("Using editor delta", delta);
+
+      const pdfBlob = await pdfExporter.generatePdf(delta, {
+        filename: `${title}.pdf`,
+        margin: 10,
+        pageSize: "A4",
+        pageOrientation: "portrait",
+      });
+      saveAs(pdfBlob, `${title}.pdf`);
+    } else {
+      console.error("Quill reference is not available");
+    }
   };
   return (
     <div className=' p-4 container'>

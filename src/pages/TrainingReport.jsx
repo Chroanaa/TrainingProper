@@ -6,13 +6,15 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import { getAllATR } from "../../firebase/getAllATR";
 import { deleteATR } from "../../firebase/deleteATR";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 function TrainingReport() {
   const navigate = useNavigate();
   const [filter, setFilter] = React.useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [poi, setPoi] = React.useState([]);
   const handleChange = (event) => {
     setFilter(event.target.value);
+    setSearchParams({ filter: event.target.value });
   };
   React.useEffect(() => {
     const unsubscribe = getAllATR((data) => {
@@ -31,12 +33,28 @@ function TrainingReport() {
         console.error("Error deleting ATR:", error);
       });
   };
+  const filterData = () => {
+    if (filter === "weekly") {
+      return poi.filter(
+        (item) => item.date >= new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      );
+    } else if (filter === "monthly") {
+      return poi.filter(
+        (item) => item.date >= new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      );
+    } else if (filter === "yearly") {
+      return poi.filter(
+        (item) => item.date >= new Date(Date.now() - 365 * 24 * 60 * 60 * 1000)
+      );
+    }
+    return poi;
+  };
   return (
     <div>
       <h1 className='text-[2rem] mb-3'>Training Report</h1>
       <FormControl fullWidth>
         <InputLabel id='demo-simple-select-label'>Filter</InputLabel>
-        <Select 
+        <Select
           labelId='demo-simple-select-label'
           id='demo-simple-select'
           value={filter || ""}
@@ -49,7 +67,7 @@ function TrainingReport() {
           <MenuItem value={"yearly"}>Yearly</MenuItem>
         </Select>
       </FormControl>
-      {poi.map((item, index) => (
+      {filterData().map((item, index) => (
         <Box
           key={index}
           sx={{
