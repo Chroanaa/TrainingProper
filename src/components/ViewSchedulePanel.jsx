@@ -10,15 +10,10 @@ import {
   Button,
   Modal,
   Box,
-  Select,
-  FormControl,
-  InputLabel,
-  MenuItem,
 } from "@mui/material";
 import { deleteSchedule } from "../../firebase/deleteSchedule";
 import { getSchedule } from "../../firebase/getSchedule";
 import { saveSchedule } from "../../firebase/saveSchedule";
-import Schedule from "./Schedule";
 function ViewSchedulePanel({ value, schedules }) {
   const [openItems, setOpenItems] = React.useState({});
   const [schedule, setSchedule] = React.useState([]);

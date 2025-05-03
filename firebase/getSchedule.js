@@ -8,6 +8,5 @@ export const getSchedule = async (semester, trainingDay) => {
     return null;
   }
   const data = snapshot.val();
-  const schedule = Object.values(data);
   return data;
 };

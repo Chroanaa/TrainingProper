@@ -7,10 +7,12 @@ function IncidentReport() {
   const [value, setValue] = React.useState(0);
   const [reports, setReports] = React.useState([]);
   React.useEffect(() => {
-    const unsubscribe = getReports((data) => {
-      setReports(data);
+    const unsubscribe = getReports((reports) => {
+      setReports(reports);
     });
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
   const handleChange = (event, newValue) => {
     setValue(newValue);
