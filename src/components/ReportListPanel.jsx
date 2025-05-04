@@ -7,13 +7,15 @@ import { Box, Modal } from "@mui/material";
 import { getReport } from "../../firebase/getReport";
 import { updateReport } from "../../firebase/updateReport";
 import DeleteDialog from "./ui/DeleteDialog";
+import ConfirmDialog from "./ui/ConfirmDialog";
 import { set } from "firebase/database";
 function ReportListPanel({ value, reports }) {
   const [report, setReport] = React.useState([]);
   const [open, setOpen] = React.useState(false);
-  const [deleteOpen, setDeleteOpen] = React.useState(false);
+  const [openDeleteDialog, setopenDeleteDialog] = React.useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
   const handleOpen = () => setOpen(!open);
-  const handleDeleteOpen = () => setDeleteOpen(!deleteOpen);
+  const handleopenDeleteDialog = () => setopenDeleteDialog(!openDeleteDialog);
   const openEditModal = async (reportId) => {
     console.log(reportId);
     const reportData = await getReport(reportId);
@@ -60,15 +62,18 @@ function ReportListPanel({ value, reports }) {
               >
                 Edit
               </Button>
-              <Button variant='contained' onClick={() => handleDeleteOpen()}>
+              <Button
+                variant='contained'
+                onClick={() => handleopenDeleteDialog()}
+              >
                 Delete
               </Button>
               <DeleteDialog
-                open={deleteOpen}
-                onClose={() => setDeleteOpen(false)}
+                open={openDeleteDialog}
+                onClose={() => setopenDeleteDialog(false)}
                 onDelete={() => {
                   handleDeleteReport(report.id);
-                  setDeleteOpen(false);
+                  setopenDeleteDialog(false);
                 }}
                 title={"Delete Report"}
                 item={"report"}
@@ -100,12 +105,25 @@ function ReportListPanel({ value, reports }) {
             value={report.date}
             onChange={(e) => setReport({ ...report, date: e.target.value })}
           ></input>
-          <Button variant='contained' onClick={() => handleUpdateReport()}>
+          <Button
+            variant='contained'
+            onClick={() => setOpenConfirmDialog(true)}
+          >
             Save
           </Button>
           <Button variant='contained' onClick={handleOpen}>
             Close
           </Button>
+          <ConfirmDialog
+            open={openConfirmDialog}
+            onClose={() => setOpenConfirmDialog(false)}
+            onConfirm={() => {
+              handleUpdateReport();
+              setOpenConfirmDialog(false);
+            }}
+            title='Confirm Save'
+            message='Are you sure you want to save the changes?'
+          />
         </Box>
       </Modal>
     </div>

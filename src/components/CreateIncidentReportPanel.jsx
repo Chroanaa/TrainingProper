@@ -1,12 +1,14 @@
 import React from "react";
 import CustomTabPanel from "./CustomTabPanel";
 import { createReport } from "../../firebase/createReport";
+import ConfirmDialog from "./ui/ConfirmDialog";
 function CreateIncidentReportPanel({ value }) {
   const [report, setReport] = React.useState({
     description: "",
     date: "",
     createdAt: new Date().toISOString(),
   });
+  const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setReport((prevReport) => ({
@@ -74,9 +76,19 @@ function CreateIncidentReportPanel({ value }) {
             required
           />
         </div>
-        <button type='submit' onClick={handleSubmit}>
+        <button type='submit' onClick={() => setOpenConfirmDialog(true)}>
           Submit Report
         </button>
+        <ConfirmDialog
+          open={openConfirmDialog}
+          onClose={() => setOpenConfirmDialog(false)}
+          onConfirm={() => {
+            handleSubmit();
+            setOpenConfirmDialog(false);
+          }}
+          title='Confirm Submission'
+          message='Are you sure you want to submit this report?'
+        />
       </CustomTabPanel>
     </div>
   );

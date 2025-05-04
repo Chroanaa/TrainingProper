@@ -3,6 +3,7 @@ import { Button, FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useContext } from "react";
 import { SchedulesContext } from "../pages/CourseMaterialPreparation";
+import ConfirmDialog from "./ui/ConfirmDialog";
 function Schedule({
   handleScheduleChange,
   scheduleTime,
@@ -31,6 +32,7 @@ function Schedule({
   ];
   const schedules = useContext(SchedulesContext);
   const [disabled, setDisabled] = React.useState(true);
+  const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
 
   return (
     <div>
@@ -96,9 +98,19 @@ function Schedule({
         ))}
       </ul>
       <div className='m-3'>
-        <Button variant='contained' onClick={() => handleSave()}>
+        <Button variant='contained' onClick={() => setOpenConfirmDialog(true)}>
           Save Schedule
         </Button>
+        <ConfirmDialog
+          open={openConfirmDialog}
+          onClose={() => setOpenConfirmDialog(false)}
+          onConfirm={() => {
+            handleSave();
+            setOpenConfirmDialog(false);
+          }}
+          title='Confirm Save'
+          message='Are you sure you want to save the schedule?'
+        />
       </div>
     </div>
   );

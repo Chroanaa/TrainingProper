@@ -15,6 +15,7 @@ import { deleteSchedule } from "../../firebase/deleteSchedule";
 import { getSchedule } from "../../firebase/getSchedule";
 import { saveSchedule } from "../../firebase/saveSchedule";
 import DeleteDialog from "./ui/DeleteDialog";
+import ConfirmDialog from "./ui/ConfirmDialog";
 function ViewSchedulePanel({ value, schedules }) {
   const [openItems, setOpenItems] = React.useState({});
   const [schedule, setSchedule] = React.useState([]);
@@ -35,6 +36,7 @@ function ViewSchedulePanel({ value, schedules }) {
 
   const [open, setOpen] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
   const getSchedules = async (semester, trainingDay) => {
     const data = await getSchedule(semester, trainingDay);
     const { event, time } = data;
@@ -132,7 +134,17 @@ function ViewSchedulePanel({ value, schedules }) {
                 </div>
               </div>
             ))}
-            <Button onClick={handleSave}>Save</Button>
+            <Button onClick={() => setOpenConfirmDialog(true)}>Save</Button>
+            <ConfirmDialog
+              open={openConfirmDialog}
+              onClose={() => setOpenConfirmDialog(false)}
+              onConfirm={() => {
+                handleSave();
+                setOpenConfirmDialog(false);
+              }}
+              title='Confirm Save'
+              message='Are you sure you want to save this schedule?'
+            />
           </div>
         </Box>
       </Modal>

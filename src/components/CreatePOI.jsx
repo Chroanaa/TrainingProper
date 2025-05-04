@@ -9,6 +9,7 @@ import { pdfExporter } from "quill-to-pdf";
 import { useNavigate } from "react-router";
 import { Select, FormControl, InputLabel, MenuItem } from "@mui/material";
 import { getSchedule } from "../../firebase/getSchedule";
+import ConfirmDialog from "./ui/ConfirmDialog";
 
 function UploadMaterialPanel({ value, index }) {
   const navigate = useNavigate();
