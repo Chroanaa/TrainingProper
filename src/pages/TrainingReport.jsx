@@ -7,6 +7,7 @@ import Select from "@mui/material/Select";
 import { getAllATR } from "../../firebase/getAllATR";
 import { deleteATR } from "../../firebase/deleteATR";
 import { useNavigate, useSearchParams } from "react-router";
+import DeleteDialog from "../components/ui/DeleteDialog";
 function TrainingReport() {
   const navigate = useNavigate();
   const [filter, setFilter] = React.useState("");
@@ -33,6 +34,8 @@ function TrainingReport() {
         console.error("Error deleting ATR:", error);
       });
   };
+  const [open, setOpen] = React.useState(false);
+
   const filterData = () => {
     if (filter === "weekly") {
       return poi.filter(
@@ -79,7 +82,17 @@ function TrainingReport() {
         >
           <h3>{item.title}</h3>
           <button onClick={() => handleClickView(item.id)}>view</button>
-          <button onClick={() => handleDelete(item.id)}>delete</button>
+          <button onClick={() => setOpen(true)}>delete</button>
+          <DeleteDialog
+            open={open}
+            onClose={() => setOpen(false)}
+            onDelete={() => {
+              handleDelete(item.id);
+              setOpen(false);
+            }}
+            title={"Delete ATR"}
+            item={"ATR"}
+          />
         </Box>
       ))}
     </div>

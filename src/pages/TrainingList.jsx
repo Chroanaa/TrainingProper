@@ -3,8 +3,11 @@ import { fetchPOIS } from "../../firebase/fetchPOIS";
 import { NavLink } from "react-router-dom";
 import { Button } from "@mui/material";
 import { deletePOI } from "../../firebase/deletePOI";
+import DeleteDialog from "../components/ui/DeleteDialog";
+import { set } from "firebase/database";
 function TrainingList() {
   const [fetchedDocuments, setFetchedDocuments] = React.useState([]);
+  const [open, setOpen] = React.useState(false);
   React.useEffect(() => {
     const unsubscribe = fetchPOIS((data) => {
       setFetchedDocuments(data);
@@ -33,12 +36,21 @@ function TrainingList() {
               >
                 {document.title}
               </NavLink>
-              <Button
-                variant='outlined'
-                onClick={() => handleDelete(document.id)}
-              >
+              <Button variant='outlined' onClick={() => setOpen(true)}>
                 Delete
               </Button>
+              <DeleteDialog
+                open={open}
+                onClose={() => {
+                  setOpen(false);
+                }}
+                onDelete={() => {
+                  handleDelete(document.id);
+                  setOpen(false);
+                }}
+                title='Delete Document'
+                item='document'
+              />
             </li>
           ))
         ) : (

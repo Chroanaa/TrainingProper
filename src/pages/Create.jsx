@@ -42,10 +42,6 @@ function Create() {
       return;
     }
 
-    // Clear the editor
-    quillRef.current?.quill.deleteText(0, quillRef.current.quill.getLength());
-
-    // Insert header
     quillRef.current?.quill.insertText(0, "Reports", { header: 2 });
     let insertIndex = quillRef.current.quill.getLength();
 

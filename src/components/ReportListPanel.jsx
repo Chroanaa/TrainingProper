@@ -6,10 +6,14 @@ import { deleteReport } from "../../firebase/deleteReport";
 import { Box, Modal } from "@mui/material";
 import { getReport } from "../../firebase/getReport";
 import { updateReport } from "../../firebase/updateReport";
+import DeleteDialog from "./ui/DeleteDialog";
+import { set } from "firebase/database";
 function ReportListPanel({ value, reports }) {
   const [report, setReport] = React.useState([]);
   const [open, setOpen] = React.useState(false);
+  const [deleteOpen, setDeleteOpen] = React.useState(false);
   const handleOpen = () => setOpen(!open);
+  const handleDeleteOpen = () => setDeleteOpen(!deleteOpen);
   const openEditModal = async (reportId) => {
     console.log(reportId);
     const reportData = await getReport(reportId);
@@ -56,12 +60,19 @@ function ReportListPanel({ value, reports }) {
               >
                 Edit
               </Button>
-              <Button
-                variant='contained'
-                onClick={() => handleDeleteReport(report.id)}
-              >
+              <Button variant='contained' onClick={() => handleDeleteOpen()}>
                 Delete
               </Button>
+              <DeleteDialog
+                open={deleteOpen}
+                onClose={() => setDeleteOpen(false)}
+                onDelete={() => {
+                  handleDeleteReport(report.id);
+                  setDeleteOpen(false);
+                }}
+                title={"Delete Report"}
+                item={"report"}
+              />
             </div>
           ))}
         </div>

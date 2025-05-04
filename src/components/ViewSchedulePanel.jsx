@@ -14,6 +14,7 @@ import {
 import { deleteSchedule } from "../../firebase/deleteSchedule";
 import { getSchedule } from "../../firebase/getSchedule";
 import { saveSchedule } from "../../firebase/saveSchedule";
+import DeleteDialog from "./ui/DeleteDialog";
 function ViewSchedulePanel({ value, schedules }) {
   const [openItems, setOpenItems] = React.useState({});
   const [schedule, setSchedule] = React.useState([]);
@@ -33,6 +34,7 @@ function ViewSchedulePanel({ value, schedules }) {
   };
 
   const [open, setOpen] = React.useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const getSchedules = async (semester, trainingDay) => {
     const data = await getSchedule(semester, trainingDay);
     const { event, time } = data;
@@ -89,13 +91,7 @@ function ViewSchedulePanel({ value, schedules }) {
                   </List>
                 </Collapse>
               </ListItemButton>
-              <Button
-                onClick={() =>
-                  handleDelete(schedule.trainingDay, schedule.semester)
-                }
-              >
-                Delete
-              </Button>
+              <Button onClick={() => setOpenDeleteDialog(true)}>Delete</Button>
               <Button
                 onClick={() => {
                   handleOpen();
@@ -104,6 +100,16 @@ function ViewSchedulePanel({ value, schedules }) {
               >
                 Edit
               </Button>
+              <DeleteDialog
+                open={openDeleteDialog}
+                onClose={setOpenDeleteDialog}
+                onDelete={() => {
+                  handleDelete(schedule.trainingDay, schedule.semester);
+                  setOpenDeleteDialog(false);
+                }}
+                title={`Delete ${schedule.trainingDay} - ${schedule.semester}`}
+                item={schedule.trainingDay}
+              />
             </div>
           ))}
         </List>
