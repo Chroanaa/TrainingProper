@@ -4,8 +4,8 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { getAllATR } from "../../firebase/getAllATR";
-import { deleteATR } from "../../firebase/deleteATR";
+import { getAllATR } from "../../firebase/ATR/getAllATR";
+import { deleteATR } from "../../firebase/ATR/deleteATR";
 import { useNavigate, useSearchParams } from "react-router";
 import DeleteDialog from "../components/ui/DeleteDialog";
 function TrainingReport() {

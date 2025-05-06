@@ -1,8 +1,8 @@
 import React from "react";
-import { viewATR } from "../../firebase/viewATR";
-import QuillComponent from "../components/Quill";
+import { viewATR } from "../../firebase/ATR/viewATR";
+import QuillComponent from "../components/ui/Quill";
 import { useLoaderData } from "react-router-dom";
-import { updateATR } from "../../firebase/updateATR";
+import { updateATR } from "../../firebase/ATR/updateATR";
 import { Button } from "@mui/material";
 import { saveAs } from "file-saver";
 import { pdfExporter } from "quill-to-pdf";

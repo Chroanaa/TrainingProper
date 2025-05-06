@@ -1,4 +1,4 @@
-import app from "../config/firebase";
+import app from "../../config/firebase";
 import { getDatabase, ref, remove } from "firebase/database";
 const db = getDatabase(app);
 export const deletePOI = async (id) => {

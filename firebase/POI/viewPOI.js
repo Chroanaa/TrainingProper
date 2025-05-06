@@ -1,4 +1,4 @@
-import app from "../config/firebase";
+import app from "../../config/firebase";
 import { getDatabase, get, ref, child } from "firebase/database";
 export const viewPOI = async (id) => {
   const db = ref(getDatabase(app));

@@ -1,5 +1,5 @@
 import { getDatabase, set, ref } from "firebase/database";
-import app from "../config/firebase.js";
+import app from "../../config/firebase";
 
 export async function saveSchedule(schedule) {
   const db = getDatabase(app);

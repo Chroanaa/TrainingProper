@@ -1,9 +1,9 @@
-import app from "../config/firebase.js";
+import app from "../../config/firebase.js";
 import { ref, set, getDatabase } from "firebase/database";
 
 export async function insert(document) {
   const db = getDatabase(app);
-  await set(ref(db, "POI/" + document.id), {
+  await set(ref(db, "ATR/" + document.id), {
     id: document.id,
     title: document.title,
     content: document.content,

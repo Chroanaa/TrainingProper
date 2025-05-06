@@ -2,8 +2,8 @@ import React from "react";
 import { Button, FormControl, InputLabel, Select } from "@mui/material";
 import MenuItem from "@mui/material/MenuItem";
 import { useContext } from "react";
-import { SchedulesContext } from "../pages/CourseMaterialPreparation";
-import ConfirmDialog from "./ui/ConfirmDialog";
+import { SchedulesContext } from "../../pages/CourseMaterialPreparation";
+import ConfirmDialog from "../ui/ConfirmDialog";
 function Schedule({
   handleScheduleChange,
   scheduleTime,

@@ -1,4 +1,4 @@
-import app from "../config/firebase";
+import app from "../../config/firebase";
 import { set, ref, getDatabase } from "firebase/database";
 
 export const createReport = async (reportData) => {

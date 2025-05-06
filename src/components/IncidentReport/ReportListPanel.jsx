@@ -1,14 +1,13 @@
 import React from "react";
-import CustomTabPanel from "./CustomTabPanel";
-import AccordionExpand from "./ui/AccordionExpand";
+import CustomTabPanel from "../ui/CustomTabPanel";
+import AccordionExpand from "../ui/AccordionExpand";
 import { Button } from "@mui/material";
-import { deleteReport } from "../../firebase/deleteReport";
+import { deleteReport } from "../../../firebase/Report/deleteReport";
 import { Box, Modal } from "@mui/material";
-import { getReport } from "../../firebase/getReport";
-import { updateReport } from "../../firebase/updateReport";
-import DeleteDialog from "./ui/DeleteDialog";
-import ConfirmDialog from "./ui/ConfirmDialog";
-import { set } from "firebase/database";
+import { getReport } from "../../../firebase/Report/getReport";
+import { updateReport } from "../../../firebase/Report/updateReport";
+import DeleteDialog from "../ui/DeleteDialog";
+import ConfirmDialog from "../ui/ConfirmDialog";
 function ReportListPanel({ value, reports }) {
   const [report, setReport] = React.useState([]);
   const [open, setOpen] = React.useState(false);

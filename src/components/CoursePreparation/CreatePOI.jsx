@@ -1,15 +1,15 @@
 import React from "react";
-import CustomTabPanel from "./CustomTabPanel";
-import QuillComponent from "./Quill";
+import CustomTabPanel from "../ui/CustomTabPanel";
+import QuillComponent from "../ui/Quill";
 import { Button } from "@mui/material";
-import { insert } from "../../firebase/createPOI";
-import { generateId } from "../utils/generateId";
+import { insert } from "../../../firebase/POI/createPOI";
+import { generateId } from "../../utils/generateId";
 import { saveAs } from "file-saver";
 import { pdfExporter } from "quill-to-pdf";
 import { useNavigate } from "react-router";
 import { Select, FormControl, InputLabel, MenuItem } from "@mui/material";
-import { getSchedule } from "../../firebase/getSchedule";
-import ConfirmDialog from "./ui/ConfirmDialog";
+import { getSchedule } from "../../../firebase/Schedule/getSchedule";
+import ConfirmDialog from "../ui/ConfirmDialog";
 
 function UploadMaterialPanel({ value, index }) {
   const navigate = useNavigate();
@@ -18,6 +18,10 @@ function UploadMaterialPanel({ value, index }) {
   const [title, setTitle] = React.useState("Untitled");
   const [semester, setSemester] = React.useState("");
   const [schedule, setSchedule] = React.useState([]);
+  const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
+    isOpen: false,
+    dialog: "",
+  });
   React.useEffect(() => {
     console.log(schedule);
   }, [schedule]);
@@ -44,7 +48,6 @@ function UploadMaterialPanel({ value, index }) {
       quillRef.current?.setHtml("<h2>No Schedule Available</h2>");
       return;
     }
-
     quillRef.current.quill.deleteText(0, quillRef.current.quill.getLength());
 
     quillRef.current.quill.insertText(0, "Schedule", { header: 2 });
@@ -89,11 +92,8 @@ function UploadMaterialPanel({ value, index }) {
   };
   const handleDownload = async () => {
     const quillRef1 = quillRef.current;
-
     if (quillRef1) {
       const delta = quillRef1.getContents();
-      console.log("Using editor delta", delta);
-
       const pdfBlob = await pdfExporter.generatePdf(delta, {
         filename: `${title}.pdf`,
         margin: 10,
@@ -103,6 +103,48 @@ function UploadMaterialPanel({ value, index }) {
       saveAs(pdfBlob, `${title}.pdf`);
     } else {
       console.error("Quill reference is not available");
+    }
+  };
+  const renderDialog = () => {
+    if (openConfirmDialog.dialog === "save") {
+      return (
+        <ConfirmDialog
+          open={openConfirmDialog.isOpen}
+          onClose={() => setOpenConfirmDialog({ isOpen: false })}
+          title='Save Document'
+          message='Are you sure you want to save this document?'
+          onConfirm={() => {
+            handleSave();
+            setOpenConfirmDialog({ isOpen: false });
+          }}
+        />
+      );
+    } else if (openConfirmDialog.dialog === "download") {
+      return (
+        <ConfirmDialog
+          open={openConfirmDialog.isOpen}
+          onClose={() => setOpenConfirmDialog({ isOpen: false })}
+          title='Download Document'
+          message='Are you sure you want to download this document?'
+          onConfirm={() => {
+            handleDownload();
+            setOpenConfirmDialog({ isOpen: false });
+          }}
+        />
+      );
+    } else if (openConfirmDialog.dialog === "getSchedule") {
+      return (
+        <ConfirmDialog
+          open={openConfirmDialog.isOpen}
+          onClose={() => setOpenConfirmDialog({ isOpen: false })}
+          title='Get Schedule'
+          message='Are you sure you want to get the schedule?'
+          onConfirm={() => {
+            handleGetSchedule();
+            setOpenConfirmDialog({ isOpen: false });
+          }}
+        />
+      );
     }
   };
   return (
@@ -124,16 +166,41 @@ function UploadMaterialPanel({ value, index }) {
         </FormControl>
         <QuillComponent ref={quillRef} />
         <div className='gap-3 rounded-lg p-4 flex justify-end'>
-          <Button variant='contained' onClick={handleSave}>
+          <Button
+            variant='contained'
+            onClick={() =>
+              setOpenConfirmDialog({
+                isOpen: true,
+                dialog: "save",
+              })
+            }
+          >
             Save
           </Button>
-          <Button variant='contained' onClick={handleGetSchedule}>
+          <Button
+            variant='contained'
+            onClick={() =>
+              setOpenConfirmDialog({
+                isOpen: true,
+                dialog: "getSchedule",
+              })
+            }
+          >
             Get Schedules
           </Button>
-          <Button variant='contained' onClick={handleDownload}>
+          <Button
+            variant='contained'
+            onClick={() =>
+              setOpenConfirmDialog({
+                isOpen: true,
+                dialog: "download",
+              })
+            }
+          >
             Download
           </Button>
         </div>
+        {renderDialog()}
       </CustomTabPanel>
     </div>
   );

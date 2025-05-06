@@ -1,4 +1,4 @@
-import app from "../config/firebase";
+import app from "../../config/firebase";
 import { getDatabase, onValue, off, ref } from "firebase/database";
 
 export const fetchPOIS = async (callback) => {

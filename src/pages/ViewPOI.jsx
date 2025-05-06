@@ -1,8 +1,8 @@
 import React from "react";
 import { useLoaderData, useParams } from "react-router-dom";
-import { viewPOI } from "../../firebase/viewPOI";
-import QuillComponent from "../components/Quill";
-import { updatePOI } from "../../firebase/updatePOI";
+import { viewPOI } from "../../firebase/POI/viewPOI";
+import QuillComponent from "../components/ui/Quill";
+import { updatePOI } from "../../firebase/POI/updatePOI";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 import { saveAs } from "file-saver";

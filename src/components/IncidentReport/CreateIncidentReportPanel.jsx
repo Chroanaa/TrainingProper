@@ -1,7 +1,7 @@
 import React from "react";
-import CustomTabPanel from "./CustomTabPanel";
-import { createReport } from "../../firebase/createReport";
-import ConfirmDialog from "./ui/ConfirmDialog";
+import CustomTabPanel from "../ui/CustomTabPanel";
+import { createReport } from "../../../firebase/Report/createReport";
+import ConfirmDialog from "../ui/ConfirmDialog";
 function CreateIncidentReportPanel({ value }) {
   const [report, setReport] = React.useState({
     description: "",

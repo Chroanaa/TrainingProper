@@ -1,9 +1,9 @@
 import React from "react";
-import CoursePrepTabs from "../components/CoursePrepTabs";
-import CreatePOI from "../components/CreatePOI";
-import SetSchedulePanel from "../components/SetSchedulePanel";
-import ViewSchedulePanel from "../components/ViewSchedulePanel";
-import { getSchedules } from "../../firebase/getSchedules";
+import CoursePrepTabs from "../components/CoursePreparation/CoursePrepTabs";
+import CreatePOI from "../components/CoursePreparation/CreatePOI";
+import SetSchedulePanel from "../components/CoursePreparation/SetSchedulePanel";
+import ViewSchedulePanel from "../components/CoursePreparation/ViewSchedulePanel";
+import { getSchedules } from "../../firebase/Schedule/getSchedules";
 import { useSearchParams } from "react-router-dom";
 import { createContext } from "react";
 export const SchedulesContext = createContext();

@@ -1,5 +1,5 @@
 import React from "react";
-import CustomTabPanel from "./CustomTabPanel";
+import CustomTabPanel from "../ui/CustomTabPanel";
 import {
   List,
   ListSubheader,
@@ -11,11 +11,11 @@ import {
   Modal,
   Box,
 } from "@mui/material";
-import { deleteSchedule } from "../../firebase/deleteSchedule";
-import { getSchedule } from "../../firebase/getSchedule";
-import { saveSchedule } from "../../firebase/saveSchedule";
-import DeleteDialog from "./ui/DeleteDialog";
-import ConfirmDialog from "./ui/ConfirmDialog";
+import { deleteSchedule } from "../../../firebase/Schedule/deleteSchedule";
+import { getSchedule } from "../../../firebase/Schedule/getSchedule";
+import { saveSchedule } from "../../../firebase/Schedule/saveSchedule";
+import DeleteDialog from "../ui/DeleteDialog";
+import ConfirmDialog from "../ui/ConfirmDialog";
 function ViewSchedulePanel({ value, schedules }) {
   const [openItems, setOpenItems] = React.useState({});
   const [schedule, setSchedule] = React.useState([]);
@@ -104,7 +104,7 @@ function ViewSchedulePanel({ value, schedules }) {
               </Button>
               <DeleteDialog
                 open={openDeleteDialog}
-                onClose={setOpenDeleteDialog}
+                onClose={() => setOpenDeleteDialog(false)}
                 onDelete={() => {
                   handleDelete(schedule.trainingDay, schedule.semester);
                   setOpenDeleteDialog(false);

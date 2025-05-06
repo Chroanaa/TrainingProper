@@ -1,8 +1,8 @@
 import React from "react";
-import IncidentReportTabs from "../components/IncidentReportTabs";
-import CreateIncidentReportPanel from "../components/CreateIncidentReportPanel";
-import ReportListPanel from "../components/ReportListPanel";
-import { getReports } from "../../firebase/getReports";
+import IncidentReportTabs from "../components/IncidentReport/IncidentReportTabs";
+import CreateIncidentReportPanel from "../components/IncidentReport/CreateIncidentReportPanel";
+import ReportListPanel from "../components/IncidentReport/ReportListPanel";
+import { getReports } from "../../firebase/Report/getReports";
 function IncidentReport() {
   const [value, setValue] = React.useState(0);
   const [reports, setReports] = React.useState([]);

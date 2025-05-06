@@ -1,8 +1,8 @@
 import React from "react";
-import { fetchPOIS } from "../../firebase/fetchPOIS";
+import { fetchPOIS } from "../../firebase/POI/fetchPOIS";
 import { NavLink } from "react-router-dom";
 import { Button } from "@mui/material";
-import { deletePOI } from "../../firebase/deletePOI";
+import { deletePOI } from "../../firebase/POI/deletePOI";
 import DeleteDialog from "../components/ui/DeleteDialog";
 import { set } from "firebase/database";
 function TrainingList() {

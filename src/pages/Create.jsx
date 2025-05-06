@@ -1,12 +1,12 @@
 import React from "react";
-import { insert } from "../../firebase/createATR";
+import { insert } from "../../firebase/ATR/createATR";
 import { generateId } from "../utils/generateId";
 import { useNavigate } from "react-router-dom";
-import QuillComponent from "../components/Quill";
+import QuillComponent from "../components/ui/Quill";
 import { Button } from "@mui/material";
 import { saveAs } from "file-saver";
 import { pdfExporter } from "quill-to-pdf";
-import { getReports } from "../../firebase/getReports";
+import { getReports } from "../../firebase/Report/getReports";
 function Create() {
   const navigate = useNavigate();
   const [title, setTitle] = React.useState("Untitled");

@@ -1,11 +1,8 @@
 import React from "react";
-import Schedule from "../components/Schedule";
-import { saveSchedule } from "../../firebase/saveSchedule";
-import Alert from "@mui/material/Alert";
-import CustomTabPanel from "./CustomTabPanel";
+import Schedule from "../ui/Schedule";
+import { saveSchedule } from "../../../firebase/Schedule/saveSchedule";
+import CustomTabPanel from "../ui/CustomTabPanel";
 import { useSearchParams } from "react-router";
-import { useContext } from "react";
-import { SchedulesContext } from "../pages/CourseMaterialPreparation";
 function SetSchedulePanel({ value, index }) {
   const scheduleTime = [
     "6:00 AM - 7:00 AM",

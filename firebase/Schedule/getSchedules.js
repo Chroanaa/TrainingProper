@@ -1,4 +1,4 @@
-import app from "../config/firebase";
+import app from "../../config/firebase";
 import { getDatabase, ref, onValue, off } from "firebase/database";
 
 export const getSchedules = (callback) => {

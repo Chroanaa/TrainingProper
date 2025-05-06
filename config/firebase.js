@@ -6,7 +6,6 @@ const firebaseConfig = {
   databaseURL:
     "https://trainingproper-69f74-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "trainingproper-69f74",
-  storageBucket: "trainingproper-69f74.firebasestorage.app",
   messagingSenderId: "431867267342",
   appId: "1:431867267342:web:b94a07208bcd7e8b0aef5f",
 };
