@@ -1,25 +1,47 @@
 import React from "react";
 import { insert } from "../../firebase/ATR/createATR";
 import { generateId } from "../utils/generateId";
-import { useNavigate } from "react-router-dom";
 import QuillComponent from "../components/ui/Quill";
 import { Button } from "@mui/material";
 import { saveAs } from "file-saver";
 import { pdfExporter } from "quill-to-pdf";
 import { getReports } from "../../firebase/Report/getReports";
+import AlertDialog from "../components/ui/AlertDialog";
+import ConfirmDialog from "../components/ui/ConfirmDialog";
+import { saveToLocalStorage } from "../utils/saveToLocalStorage";
+import { set } from "firebase/database";
 function Create() {
-  const navigate = useNavigate();
+  const quillRef = React.useRef(null);
   const [title, setTitle] = React.useState("Untitled");
+  const [quillContent, setQuillContent] = React.useState(
+    quillRef.current?.getHtml()
+  );
   const [reports, setReports] = React.useState([]);
+  const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
+    isOpen: false,
+    dialog: "",
+  });
+
+  const [openAlertDialog, setOpenAlertDialog] = React.useState(false);
+
   React.useEffect(() => {
     const unsubscribe = getReports((data) => {
       setReports(data);
     });
+    console.log(quillContent);
+    setQuillContent(quillRef.current?.getHtml());
     return () => {
       unsubscribe();
+      saveToLocalStorage(title, quillContent);
     };
-  }, []);
-  const quillRef = React.useRef(null);
+  }, [quillContent, title]);
+  React.useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  });
+
   const timeCreated = new Date().toISOString();
   const handleSave = async () => {
     const html = quillRef.current?.getHtml();
@@ -93,6 +115,79 @@ function Create() {
     });
     saveAs(pdfBlob, `${title}.pdf`);
   };
+  const renderConfirmDialog = () => {
+    switch (openConfirmDialog.dialog) {
+      case "Save":
+        return (
+          <ConfirmDialog
+            open={openConfirmDialog.isOpen}
+            onClose={() =>
+              setOpenConfirmDialog({
+                isOpen: false,
+                dialog: "",
+              })
+            }
+            onConfirm={() => {
+              handleSave();
+              setOpenConfirmDialog({
+                isOpen: false,
+                dialog: "",
+              });
+            }}
+            title={"Save Document"}
+            message={"Are you sure you want to save the document?"}
+          />
+        );
+      case "getReports":
+        return (
+          <ConfirmDialog
+            open={openConfirmDialog.isOpen}
+            onClose={() => {
+              handleDownload(),
+                setOpenConfirmDialog({
+                  isOpen: false,
+                  dialog: "",
+                });
+            }}
+            onConfirm={() => {
+              handleGetReports();
+              setOpenConfirmDialog({
+                isOpen: false,
+                dialog: "",
+              });
+            }}
+            title={"Get Reports"}
+            message={"Are you sure you want to get the reports?"}
+          />
+        );
+      case "Download":
+        return (
+          <ConfirmDialog
+            open={openConfirmDialog.isOpen}
+            onClose={() =>
+              setOpenConfirmDialog({
+                isOpen: false,
+                dialog: "",
+              })
+            }
+            onConfirm={() => {
+              handleDownload();
+              setOpenConfirmDialog({
+                isOpen: false,
+                dialog: "",
+              });
+            }}
+            title={"Download Document"}
+            message={"Are you sure you want to download the document?"}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+  const handleBeforeUnload = (event) => {
+    event.preventDefault();
+  };
   return (
     <div>
       <h1 className='text-[2rem] mb-[1rem]'>Report Creation</h1>
@@ -112,24 +207,44 @@ function Create() {
             variant='contained'
             class='bg-[#556B2F] text-white px-5 p-2 rounded-b-sm'
             type='submit'
-            onClick={handleSave}
+            onClick={() =>
+              setOpenConfirmDialog({
+                isOpen: true,
+                dialog: "Save",
+              })
+            }
           >
             Save
           </Button>
           <Button
             variant='contained'
             class='bg-[#2C2C2C] text-white px-5 p-2 rounded-b-sm'
-            onClick={() => handleGetReports()}
+            onClick={() =>
+              setOpenConfirmDialog({
+                isOpen: true,
+                dialog: "getReports",
+              })
+            }
           >
             Get Current Incident Reports
           </Button>
           <Button
             variant='contained'
             class='bg-[#2C2C2C]  text-white px-5 rounded-b-sm'
-            onClick={() => handleDownload()}
+            onClick={() =>
+              setOpenConfirmDialog({
+                isOpen: true,
+                dialog: "Download",
+              })
+            }
           >
             Download
           </Button>
+          {renderConfirmDialog()}
+          <AlertDialog
+            open={openAlertDialog}
+            handleClose={() => setOpenAlertDialog(false)}
+          />
         </div>
       </div>
     </div>

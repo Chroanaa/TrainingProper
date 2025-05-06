@@ -14,7 +14,9 @@ import ViewPOI, { loader as poiLoader } from "./pages/ViewPOI";
 import CourseMaterialPreparation from "./pages/CourseMaterialPreparation";
 import IncidentReport from "./pages/IncidentReport";
 import TrainingReport from "./pages/TrainingReport";
-import ViewATR, {loader as viewAtrLoader} from "./pages/ViewATR";
+import ViewATR, { loader as viewAtrLoader } from "./pages/ViewATR";
+import React from "react";
+
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -36,7 +38,6 @@ function App() {
           loader={viewAtrLoader}
         />
       </Route>
-  
     )
   );
 
