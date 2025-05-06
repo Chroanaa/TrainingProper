@@ -23,6 +23,17 @@ function ViewATR() {
       quillRef.current?.setHtml(data.content);
     }
   }, []);
+  const handleBeforeUnload = (event) => {
+    const confirmationMessage = "Are you sure you want to leave? Your changes may not be saved.";
+    event.returnValue = confirmationMessage; // For most browsers
+    return confirmationMessage; // For some older browsers
+  };
+  React.useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  })
   const handleSave = async () => {
     const content = quillRef.current?.getHtml();
     const updatedData = {
