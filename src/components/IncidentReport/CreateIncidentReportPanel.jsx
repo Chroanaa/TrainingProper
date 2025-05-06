@@ -2,6 +2,7 @@ import React from "react";
 import CustomTabPanel from "../ui/CustomTabPanel";
 import { createReport } from "../../../firebase/Report/createReport";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import {saveToLocalStorage} from "../../../utils/localStorage";
 function CreateIncidentReportPanel({ value }) {
   const [report, setReport] = React.useState({
     description: "",
@@ -15,7 +16,23 @@ function CreateIncidentReportPanel({ value }) {
       ...prevReport,
       [name]: value,
     }));
+    saveToLocalStorage ("report", JSON.stringify(report));
   };
+  React.useEffect(() => {
+    if(value === 1) {
+      const storedReport = localStorage.getItem("report");
+      if (storedReport) {
+        setReport(JSON.parse(storedReport));
+      }
+    }
+  }, []);
+  React.useEffect(() => {
+      const storedReport = localStorage.getItem("report");
+      if (storedReport) {
+        setReport(JSON.parse(storedReport));
+      
+    }
+  }, []);
   const handleSubmit = () => {
     createReport({
       id: `${report.description}-${report.date}`,

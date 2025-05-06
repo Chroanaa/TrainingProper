@@ -81,6 +81,24 @@ function SetSchedulePanel({ value, index }) {
   }
 }
   , [value]);
+  React.useEffect(() => {
+    
+      const savedSemester = JSON.parse(localStorage.getItem("semester"));
+      const savedTrainingDay = JSON.parse(localStorage.getItem("trainingDay"));
+      const savedSchedule = JSON.parse(localStorage.getItem("schedule"));
+      if (savedSemester) {
+        setSemester(savedSemester);
+      }
+      if (savedTrainingDay) {
+        setTrainingDay(savedTrainingDay);
+      }
+      if (savedSchedule) {
+        setSchedule(savedSchedule);
+      }
+      
+    
+  }
+    , []);
   return (
     <div className=' w-full'>
       <CustomTabPanel value={value} index={1}>
