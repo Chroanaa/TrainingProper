@@ -21,6 +21,7 @@ function UploadMaterialPanel({ value, index }) {
   const [semester, setSemester] = React.useState("");
   const [schedule, setSchedule] = React.useState([]);
   const [quillContent, setQuillContent] = React.useState("");
+  const [disabled, setDisabled] = React.useState(true);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
     isOpen: false,
     dialog: "",
@@ -31,6 +32,7 @@ function UploadMaterialPanel({ value, index }) {
   };
   const handleGetSemester = (e) => {
     setSemester(e.target.value);
+    setDisabled(false);
   };
  quillRef.current?.onChange((html) => {
     setQuillContent(html);
@@ -214,6 +216,7 @@ function UploadMaterialPanel({ value, index }) {
                 dialog: "getSchedule",
               })
             }
+            disabled={disabled}
           >
             Get Schedules
           </Button>

@@ -3,6 +3,8 @@ import Schedule from "../ui/Schedule";
 import { saveSchedule } from "../../../firebase/Schedule/saveSchedule";
 import CustomTabPanel from "../ui/CustomTabPanel";
 import { useSearchParams } from "react-router";
+import { saveToLocalStorage } from "../../utils/saveToLocalStorage";
+import { set } from "firebase/database";
 function SetSchedulePanel({ value, index }) {
   const scheduleTime = [
     "6:00 AM - 7:00 AM",
@@ -26,12 +28,17 @@ function SetSchedulePanel({ value, index }) {
     const newSchedule = [...schedule];
     newSchedule[index].event = event.target.value;
     setSchedule(newSchedule);
+    saveToLocalStorage("schedule", newSchedule);
+
+
   };
   const handleSemesterChange = (value) => {
     setSemester(value);
+    saveToLocalStorage("semester", value);
   };
   const handleChangeTrainingDay = (value) => {
     setTrainingDay(value);
+    saveToLocalStorage("trainingDay", value);
   };
   const handleSave = async () => {
     const scheduleData = {
@@ -50,10 +57,30 @@ function SetSchedulePanel({ value, index }) {
         event: "",
       }))
     );
-
+    localStorage.removeItem("schedule");
     params.set("list", "view");
     setSearchParams(params);
+
   };
+  
+  React.useEffect(() => {
+  if(value === 1) {
+    const savedSemester = JSON.parse(localStorage.getItem("semester"));
+    const savedTrainingDay = JSON.parse(localStorage.getItem("trainingDay"));
+    const savedSchedule = JSON.parse(localStorage.getItem("schedule"));
+    if (savedSemester) {
+      setSemester(savedSemester);
+    }
+    if (savedTrainingDay) {
+      setTrainingDay(savedTrainingDay);
+    }
+    if (savedSchedule) {
+      setSchedule(savedSchedule);
+    }
+    
+  }
+}
+  , [value]);
   return (
     <div className=' w-full'>
       <CustomTabPanel value={value} index={1}>
