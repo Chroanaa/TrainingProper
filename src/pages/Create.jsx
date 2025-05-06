@@ -9,13 +9,11 @@ import { getReports } from "../../firebase/Report/getReports";
 import AlertDialog from "../components/ui/AlertDialog";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { saveToLocalStorage } from "../utils/saveToLocalStorage";
-import { set } from "firebase/database";
+import {useDebounce} from "../hooks/useDebounce";
 function Create() {
   const quillRef = React.useRef(null);
   const [title, setTitle] = React.useState("Untitled");
-  const [quillContent, setQuillContent] = React.useState(
-    quillRef.current?.getHtml()
-  );
+
   const [reports, setReports] = React.useState([]);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
     isOpen: false,
@@ -23,40 +21,52 @@ function Create() {
   });
 
   const [openAlertDialog, setOpenAlertDialog] = React.useState(false);
-
+  const [quillContent, setQuillContent] = React.useState("");
+  const debouncedTitle = useDebounce(title, 500);
+  const debouncedQuillContent = useDebounce(quillContent, 500);
   React.useEffect(() => {
     const unsubscribe = getReports((data) => {
       setReports(data);
     });
-    console.log(quillContent);
-    setQuillContent(quillRef.current?.getHtml());
+
     return () => {
       unsubscribe();
-      saveToLocalStorage(title, quillContent);
     };
-  }, [quillContent, title]);
+  }, []);
   React.useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   });
+ quillRef.current?.onChange((html) => {
+    setQuillContent(html);
+    saveToLocalStorage("quillContent", html);
 
+  })
+React.useEffect(() => {
+  const savedContent = JSON.parse(localStorage.getItem("quillContent"));
+  if (savedContent) {
+    quillRef.current?.setHtml(savedContent);
+  }
+ 
+}, []);
   const timeCreated = new Date().toISOString();
   const handleSave = async () => {
     const html = quillRef.current?.getHtml();
     const id = generateId();
     await insert({
       id: id,
-      title: title,
+      title: debouncedTitle || "Untitled",
       content: html,
       createdAt: timeCreated,
     });
-    console.log("Document saved with ID:", id);
+    localStorage.removeItem("quillContent");
     navigate("/TrainingReport");
   };
   const handleOnChange = (e) => {
     setTitle(e.target.value);
+    
   };
   const handleGetReports = () => {
     if (!reports || reports.length === 0) {

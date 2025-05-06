@@ -2,7 +2,7 @@ import React, { useImperativeHandle, forwardRef } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import QuillResizeImage from "quill-resize-image";
-import { ref, set } from "firebase/database";
+import { get, ref, set } from "firebase/database";
 Quill.register("modules/resize", QuillResizeImage);
 
 function QuillComponent(props, ref) {
@@ -44,7 +44,12 @@ function QuillComponent(props, ref) {
     getContents: () => {
       return quillInstanceRef.current.getContents();
     },
-    quill: quillInstanceRef.current,
+    onChange : (callback) => {
+      quillInstanceRef.current.on("text-change", () => {
+        const html = quillInstanceRef.current.root.innerHTML;
+        callback(html);
+      });
+    }
   }));
   return <div ref={editorRef} className='quill-editor'></div>;
 }
