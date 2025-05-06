@@ -49,7 +49,8 @@ function QuillComponent(props, ref) {
         const html = quillInstanceRef.current.root.innerHTML;
         callback(html);
       });
-    }
+    },
+    quill: quillInstanceRef.current,
   }));
   return <div ref={editorRef} className='quill-editor'></div>;
 }

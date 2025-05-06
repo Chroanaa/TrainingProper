@@ -153,7 +153,6 @@ React.useEffect(() => {
           <ConfirmDialog
             open={openConfirmDialog.isOpen}
             onClose={() => {
-              handleDownload(),
                 setOpenConfirmDialog({
                   isOpen: false,
                   dialog: "",

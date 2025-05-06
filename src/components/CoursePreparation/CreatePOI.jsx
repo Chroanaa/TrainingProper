@@ -10,6 +10,8 @@ import { useNavigate } from "react-router";
 import { Select, FormControl, InputLabel, MenuItem } from "@mui/material";
 import { getSchedule } from "../../../firebase/Schedule/getSchedule";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import {useDebounce} from "../../hooks/useDebounce";
+import {saveToLocalStorage} from "../../utils/saveToLocalStorage";
 
 function UploadMaterialPanel({ value, index }) {
   const navigate = useNavigate();
@@ -18,20 +20,47 @@ function UploadMaterialPanel({ value, index }) {
   const [title, setTitle] = React.useState("Untitled");
   const [semester, setSemester] = React.useState("");
   const [schedule, setSchedule] = React.useState([]);
+  const [quillContent, setQuillContent] = React.useState("");
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
     isOpen: false,
     dialog: "",
   });
-  React.useEffect(() => {
-    console.log(schedule);
-  }, [schedule]);
+ 
   const handleOnChange = (e) => {
     setTitle(e.target.value);
   };
   const handleGetSemester = (e) => {
     setSemester(e.target.value);
   };
+ quillRef.current?.onChange((html) => {
+    setQuillContent(html);
+    saveToLocalStorage("poiQuill", html);
+   
+ })
+ React.useEffect(() => {
 
+   const savedContent = JSON.parse(localStorage.getItem("poiQuill"));
+    if (savedContent) {
+      quillRef.current?.setHtml(savedContent);
+    }
+  }, []);
+  React.useEffect(() => {
+    if(value == 0){
+      const savedContent = JSON.parse(localStorage.getItem("poiQuill"));
+      if (savedContent) {
+        quillRef.current?.setHtml(savedContent);
+      }
+    }
+  },[value])
+  React.useEffect(() => {
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+  const handleBeforeUnload = (event) => {
+    event.preventDefault();
+  }
   const handleGetSchedule = async () => {
     const data = await getSchedule(semester);
 
