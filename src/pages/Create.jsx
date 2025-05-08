@@ -10,6 +10,7 @@ import AlertDialog from "../components/ui/AlertDialog";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { saveToLocalStorage } from "../utils/saveToLocalStorage";
 import {useDebounce} from "../hooks/useDebounce";
+import { getAttendance} from "../../mysql/getAttendance"
 function Create() {
   const quillRef = React.useRef(null);
   const [title, setTitle] = React.useState("Untitled");
@@ -33,6 +34,9 @@ function Create() {
       unsubscribe();
     };
   }, []);
+  const getAttendanceData = async () => {
+    console.log(await getAttendance())
+  }
   React.useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
@@ -49,7 +53,7 @@ React.useEffect(() => {
   if (savedContent) {
     quillRef.current?.setHtml(savedContent);
   }
- 
+  getAttendanceData()
 }, []);
   const timeCreated = new Date().toISOString();
   const handleSave = async () => {

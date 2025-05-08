@@ -2,7 +2,7 @@ import React from "react";
 import CustomTabPanel from "../ui/CustomTabPanel";
 import { createReport } from "../../../firebase/Report/createReport";
 import ConfirmDialog from "../ui/ConfirmDialog";
-import {saveToLocalStorage} from "../../../utils/localStorage";
+import {saveToLocalStorage} from "../../utils/saveToLocalStorage";
 function CreateIncidentReportPanel({ value }) {
   const [report, setReport] = React.useState({
     description: "",
