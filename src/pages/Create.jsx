@@ -9,14 +9,15 @@ import { getReports } from "../../firebase/Report/getReports";
 import AlertDialog from "../components/ui/AlertDialog";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { saveToLocalStorage } from "../utils/saveToLocalStorage";
-import {useDebounce} from "../hooks/useDebounce";
-import { getAttendance} from "../../mysql/getAttendance"
+import { useDebounce } from "../hooks/useDebounce";
+import html2pdf from "html2pdf.js";
+
+import { getAttendance } from "../../mysql/getAttendance";
 function Create() {
   const quillRef = React.useRef(null);
   const [title, setTitle] = React.useState("Untitled");
 
   const [reports, setReports] = React.useState([]);
-  const [attendance, setAttendance] = React.useState([]);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
     isOpen: false,
     dialog: "",
@@ -26,6 +27,7 @@ function Create() {
   const [quillContent, setQuillContent] = React.useState("");
   const debouncedTitle = useDebounce(title, 500);
   const debouncedQuillContent = useDebounce(quillContent, 500);
+  // fetches and listens to any updates to the database and updates the pagese
   React.useEffect(() => {
     const unsubscribe = getReports((data) => {
       setReports(data);
@@ -35,48 +37,48 @@ function Create() {
       unsubscribe();
     };
   }, []);
+  // gets the atttendance and renders it to the quill editor
   const getAttendanceData = async () => {
     const data = await getAttendance();
     const attendanceData = Object.values(data);
     let insertIndex = quillRef.current.quill.getLength();
-    let attendanceCounter = 0
+    let attendanceCounter = 0;
     for (let i = 0; i < attendanceData[1].length; i++) {
       const attendanceLogDate = attendanceData[1][i].log_date;
-      if(attendanceLogDate !==null){
-        attendanceCounter++
+      if (attendanceLogDate !== null) {
+        attendanceCounter++;
       }
-
     }
-    quillRef.current?.quill.insertText(
-      insertIndex,
-      `\n Attendance`,
-      { header: 3 }
-    );
-    insertIndex = quillRef.current.quill.getLength();
-    quillRef.current?.quill.insertText(
-      insertIndex,
-      `\n Number of Attendance: ${attendanceCounter}`,
-      { header: 4 }
-    );
-    
-  }
+    quillRef.current?.quill.insertText(insertIndex, `\n Attendance`, {
+      header: 3,
+    });
+    const tableModule = quillRef.current?.getTable();
+    const quill = quillRef.current?.quill;
+    tableModule.insertTable(2, 2);
+    const table = quill.root.querySelector("table");
+    const rows = table.rows;
+    rows[0].cells[0].children[0].innerHTML = "<td>Attendance</td>";
+    rows[0].cells[1].children[0].innerHTML = `<td>${attendanceCounter}</td>`;
+  };
+  // this checks if the user is trying to leave the page and prompts them to save their work
   React.useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   });
- quillRef.current?.onChange((html) => {
+
+  quillRef.current?.onChange((html) => {
     setQuillContent(html);
     saveToLocalStorage("quillContent", html);
-
-  })
-React.useEffect(() => {
-  const savedContent = JSON.parse(localStorage.getItem("quillContent"));
-  if (savedContent) {
-    quillRef.current?.setHtml(savedContent);
-  }
-}, []);
+  });
+  // gets the current content of the quill editor in case resetting the page or closing
+  React.useEffect(() => {
+    const savedContent = JSON.parse(localStorage.getItem("quillContent"));
+    if (savedContent) {
+      quillRef.current?.setHtml(savedContent);
+    }
+  }, []);
   const timeCreated = new Date().toISOString();
   const handleSave = async () => {
     const html = quillRef.current?.getHtml();
@@ -92,8 +94,8 @@ React.useEffect(() => {
   };
   const handleOnChange = (e) => {
     setTitle(e.target.value);
-    
   };
+  // gets the reports from the database and renders them to the quill editor
   const handleGetReports = () => {
     if (!reports || reports.length === 0) {
       quillRef.current?.setHtml("<h2>No Reports Available</h2>");
@@ -140,17 +142,20 @@ React.useEffect(() => {
       insertIndex = quillRef.current.quill.getLength();
     }
   };
-  const handleDownload = async () => {
+  const handleDownload = () => {
     const quill = quillRef.current;
-    const html = quill.getContents();
-    const pdfBlob = await pdfExporter.generatePdf(html, {
+    const html = quill.getHtml();
+
+    const options = {
+      margin: 1,
       filename: `${title}.pdf`,
-      margin: 10,
-      pageSize: "A4",
-      pageOrientation: "portrait",
-    });
-    saveAs(pdfBlob, `${title}.pdf`);
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+
+    html2pdf().set(options).from(html).save();
   };
+  // Dialogs for each button
   const renderConfirmDialog = () => {
     switch (openConfirmDialog.dialog) {
       case "Save":
@@ -179,10 +184,10 @@ React.useEffect(() => {
           <ConfirmDialog
             open={openConfirmDialog.isOpen}
             onClose={() => {
-                setOpenConfirmDialog({
-                  isOpen: false,
-                  dialog: "",
-                });
+              setOpenConfirmDialog({
+                isOpen: false,
+                dialog: "",
+              });
             }}
             onConfirm={() => {
               handleGetReports();
