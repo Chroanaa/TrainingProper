@@ -16,6 +16,7 @@ function Create() {
   const [title, setTitle] = React.useState("Untitled");
 
   const [reports, setReports] = React.useState([]);
+  const [attendance, setAttendance] = React.useState([]);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
     isOpen: false,
     dialog: "",
@@ -35,7 +36,29 @@ function Create() {
     };
   }, []);
   const getAttendanceData = async () => {
-    console.log(await getAttendance())
+    const data = await getAttendance();
+    const attendanceData = Object.values(data);
+    let insertIndex = quillRef.current.quill.getLength();
+    let attendanceCounter = 0
+    for (let i = 0; i < attendanceData[1].length; i++) {
+      const attendanceLogDate = attendanceData[1][i].log_date;
+      if(attendanceLogDate !==null){
+        attendanceCounter++
+      }
+
+    }
+    quillRef.current?.quill.insertText(
+      insertIndex,
+      `\n Attendance`,
+      { header: 3 }
+    );
+    insertIndex = quillRef.current.quill.getLength();
+    quillRef.current?.quill.insertText(
+      insertIndex,
+      `\n Number of Attendance: ${attendanceCounter}`,
+      { header: 4 }
+    );
+    
   }
   React.useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -53,7 +76,6 @@ React.useEffect(() => {
   if (savedContent) {
     quillRef.current?.setHtml(savedContent);
   }
-  getAttendanceData()
 }, []);
   const timeCreated = new Date().toISOString();
   const handleSave = async () => {
@@ -78,12 +100,12 @@ React.useEffect(() => {
       return;
     }
 
-    quillRef.current?.quill.insertText(0, "Reports", { header: 2 });
     let insertIndex = quillRef.current.quill.getLength();
+    quillRef.current?.quill.insertText(insertIndex, "Reports", { header: 2 });
 
     for (let i = 0; i < reports.length; i++) {
       const reportData = reports[i];
-
+      insertIndex = quillRef.current.quill.getLength();
       quillRef.current?.quill.insertText(
         insertIndex,
         `\n Title: ${reportData.title}`,
@@ -194,6 +216,28 @@ React.useEffect(() => {
             message={"Are you sure you want to download the document?"}
           />
         );
+      case "Attendance":
+        return (
+          <ConfirmDialog
+            open={openConfirmDialog.isOpen}
+            onClose={() =>
+              setOpenConfirmDialog({
+                isOpen: false,
+                dialog: "",
+              })
+            }
+            onConfirm={() => {
+              getAttendanceData();
+              setOpenConfirmDialog(true);
+              setOpenConfirmDialog({
+                isOpen: false,
+                dialog: "",
+              });
+            }}
+            title={"Get Attendance"}
+            message={"Are you sure you want to get the attendance?"}
+          />
+        );
       default:
         return null;
     }
@@ -252,6 +296,18 @@ React.useEffect(() => {
             }
           >
             Download
+          </Button>
+          <Button
+            variant='contained'
+            class='bg-[#2C2C2C] text-white px-5 rounded-b-sm'
+            onClick={() => {
+              setOpenConfirmDialog({
+                isOpen: true,
+                dialog: "Attendance",
+              });
+            }}
+          >
+            Get Attendance
           </Button>
           {renderConfirmDialog()}
           <AlertDialog
