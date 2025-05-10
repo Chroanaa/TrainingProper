@@ -4,14 +4,14 @@ import QuillComponent from "../ui/Quill";
 import { Button } from "@mui/material";
 import { insert } from "../../../firebase/POI/createPOI";
 import { generateId } from "../../utils/generateId";
-import { saveAs } from "file-saver";
-import { pdfExporter } from "quill-to-pdf";
+
 import { useNavigate } from "react-router";
 import { Select, FormControl, InputLabel, MenuItem } from "@mui/material";
 import { getSchedule } from "../../../firebase/Schedule/getSchedule";
 import ConfirmDialog from "../ui/ConfirmDialog";
-import {useDebounce} from "../../hooks/useDebounce";
-import {saveToLocalStorage} from "../../utils/saveToLocalStorage";
+import { useDebounce } from "../../hooks/useDebounce";
+import { saveToLocalStorage } from "../../utils/saveToLocalStorage";
+import html2pdf from "html2pdf.js";
 
 function UploadMaterialPanel({ value, index }) {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ function UploadMaterialPanel({ value, index }) {
     isOpen: false,
     dialog: "",
   });
- 
+
   const handleOnChange = (e) => {
     setTitle(e.target.value);
   };
@@ -34,26 +34,24 @@ function UploadMaterialPanel({ value, index }) {
     setSemester(e.target.value);
     setDisabled(false);
   };
- quillRef.current?.onChange((html) => {
+  quillRef.current?.onChange((html) => {
     setQuillContent(html);
     saveToLocalStorage("poiQuill", html);
-   
- })
- React.useEffect(() => {
-
-   const savedContent = JSON.parse(localStorage.getItem("poiQuill"));
+  });
+  React.useEffect(() => {
+    const savedContent = JSON.parse(localStorage.getItem("poiQuill"));
     if (savedContent) {
       quillRef.current?.setHtml(savedContent);
     }
   }, []);
   React.useEffect(() => {
-    if(value == 0){
+    if (value == 0) {
       const savedContent = JSON.parse(localStorage.getItem("poiQuill"));
       if (savedContent) {
         quillRef.current?.setHtml(savedContent);
       }
     }
-  },[value])
+  }, [value]);
   React.useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
@@ -62,7 +60,7 @@ function UploadMaterialPanel({ value, index }) {
   }, []);
   const handleBeforeUnload = (event) => {
     event.preventDefault();
-  }
+  };
   const handleGetSchedule = async () => {
     const data = await getSchedule(semester);
 
@@ -122,19 +120,14 @@ function UploadMaterialPanel({ value, index }) {
     navigate("/List");
   };
   const handleDownload = async () => {
-    const quillRef1 = quillRef.current;
-    if (quillRef1) {
-      const delta = quillRef1.getContents();
-      const pdfBlob = await pdfExporter.generatePdf(delta, {
-        filename: `${title}.pdf`,
-        margin: 10,
-        pageSize: "A4",
-        pageOrientation: "portrait",
-      });
-      saveAs(pdfBlob, `${title}.pdf`);
-    } else {
-      console.error("Quill reference is not available");
-    }
+    const html = quillRef.current?.getHtml();
+    const options = {
+      margin: 1,
+      filename: `${title}.pdf`,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+    html2pdf().set(options).from(html).save();
   };
   const renderDialog = () => {
     if (openConfirmDialog.dialog === "save") {
