@@ -10,6 +10,7 @@ import AlertDialog from "../components/ui/AlertDialog";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { saveToLocalStorage } from "../utils/saveToLocalStorage";
 import { useDebounce } from "../hooks/useDebounce";
+import Loading from "../components/ui/Loading";
 import html2pdf from "html2pdf.js";
 
 import { getAttendance } from "../../mysql/getAttendance";
@@ -22,11 +23,11 @@ function Create() {
     isOpen: false,
     dialog: "",
   });
-
+  const [loading, setLoading] = React.useState(false);
   const [openAlertDialog, setOpenAlertDialog] = React.useState(false);
   const [quillContent, setQuillContent] = React.useState("");
   const debouncedTitle = useDebounce(title, 500);
-  const debouncedQuillContent = useDebounce(quillContent, 500);
+
   // fetches and listens to any updates to the database and updates the pagese
   React.useEffect(() => {
     const unsubscribe = getReports((data) => {
@@ -37,29 +38,40 @@ function Create() {
       unsubscribe();
     };
   }, []);
+
   // gets the atttendance and renders it to the quill editor
   const getAttendanceData = async () => {
-    const data = await getAttendance();
-    const attendanceData = Object.values(data);
-    let insertIndex = quillRef.current.quill.getLength();
-    let attendanceCounter = 0;
-    for (let i = 0; i < attendanceData[1].length; i++) {
-      const attendanceLogDate = attendanceData[1][i].log_date;
-      if (attendanceLogDate !== null) {
-        attendanceCounter++;
+    try {
+      setLoading(true);
+      const data = await getAttendance();
+      const attendanceData = Object.values(data);
+      let insertIndex = quillRef.current.quill.getLength();
+      let attendanceCounter = 0;
+      for (let i = 0; i < attendanceData[1].length; i++) {
+        const attendanceLogDate = attendanceData[1][i].log_date;
+        if (attendanceLogDate !== null) {
+          attendanceCounter++;
+        }
       }
+      quillRef.current?.quill.insertText(insertIndex, `\n Attendance`, {
+        header: 3,
+      });
+      const tableModule = quillRef.current?.getTable();
+      const quill = quillRef.current?.quill;
+      tableModule.insertTable(2, 2);
+      const table = quill.root.querySelector("table");
+      const rows = table.rows;
+      //actual diabolical
+      rows[0].cells[0].children[0].innerHTML = "<td>Attendance</td>";
+      rows[0].cells[1].children[0].innerHTML = `<td>${attendanceCounter}</td>`;
+    } catch (error) {
+      console.error("Error fetching attendance data:", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
-    quillRef.current?.quill.insertText(insertIndex, `\n Attendance`, {
-      header: 3,
-    });
-    const tableModule = quillRef.current?.getTable();
-    const quill = quillRef.current?.quill;
-    tableModule.insertTable(2, 2);
-    const table = quill.root.querySelector("table");
-    const rows = table.rows;
-    rows[0].cells[0].children[0].innerHTML = "<td>Attendance</td>";
-    rows[0].cells[1].children[0].innerHTML = `<td>${attendanceCounter}</td>`;
   };
+
   // this checks if the user is trying to leave the page and prompts them to save their work
   React.useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);
@@ -95,6 +107,7 @@ function Create() {
   const handleOnChange = (e) => {
     setTitle(e.target.value);
   };
+
   // gets the reports from the database and renders them to the quill editor
   const handleGetReports = () => {
     if (!reports || reports.length === 0) {
@@ -142,6 +155,7 @@ function Create() {
       insertIndex = quillRef.current.quill.getLength();
     }
   };
+
   const handleDownload = () => {
     const quill = quillRef.current;
     const html = quill.getHtml();
@@ -155,6 +169,7 @@ function Create() {
 
     html2pdf().set(options).from(html).save();
   };
+
   // Dialogs for each button
   const renderConfirmDialog = () => {
     switch (openConfirmDialog.dialog) {
@@ -319,6 +334,7 @@ function Create() {
             open={openAlertDialog}
             handleClose={() => setOpenAlertDialog(false)}
           />
+          <Loading text={"Getting Attendance..."} show={loading} />
         </div>
       </div>
     </div>
