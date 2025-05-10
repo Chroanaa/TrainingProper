@@ -12,12 +12,12 @@ import { saveToLocalStorage } from "../utils/saveToLocalStorage";
 import { useDebounce } from "../hooks/useDebounce";
 import Loading from "../components/ui/Loading";
 import html2pdf from "html2pdf.js";
-
+import AddTableModal from "../components/AddTableModal";
 import { getAttendance } from "../../mysql/getAttendance";
 function Create() {
   const quillRef = React.useRef(null);
   const [title, setTitle] = React.useState("Untitled");
-
+  const [openAaddTableModal, setOpenAddTableModal] = React.useState(false);
   const [reports, setReports] = React.useState([]);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
     isOpen: false,
@@ -61,6 +61,7 @@ function Create() {
       tableModule.insertTable(2, 2);
       const table = quill.root.querySelector("table");
       const rows = table.rows;
+
       //actual diabolical
       rows[0].cells[0].children[0].innerHTML = "<td>Attendance</td>";
       rows[0].cells[1].children[0].innerHTML = `<td>${attendanceCounter}</td>`;
@@ -108,6 +109,7 @@ function Create() {
     setTitle(e.target.value);
   };
 
+  // this function is used to add a table to the quill editor
   // gets the reports from the database and renders them to the quill editor
   const handleGetReports = () => {
     if (!reports || reports.length === 0) {
@@ -329,12 +331,26 @@ function Create() {
           >
             Get Attendance
           </Button>
+          <Button
+            variant='contained'
+            class='bg-[#2C2C2C] text-white px-5 rounded-b-sm'
+            onClick={() => {
+              setOpenAddTableModal(true);
+            }}
+          >
+            Insert Table
+          </Button>
           {renderConfirmDialog()}
           <AlertDialog
             open={openAlertDialog}
             handleClose={() => setOpenAlertDialog(false)}
           />
           <Loading text={"Getting Attendance..."} show={loading} />
+          <AddTableModal
+            open={openAaddTableModal}
+            onClose={() => setOpenAddTableModal(false)}
+            tableModule={quillRef.current?.getTable()}
+          />
         </div>
       </div>
     </div>
