@@ -45,26 +45,34 @@ function Create() {
       setLoading(true);
       const data = await getAttendance();
       const attendanceData = Object.values(data);
+
+      const maleAttendanceCount = attendanceData[1];
+      const maleAbsenceCount = attendanceData[2];
+      const femaleAttendanceCount = attendanceData[3];
+      const femaleAbsenceCount = attendanceData[4];
+      console.log("maleAttendanceCount", maleAttendanceCount);
+      console.log("maleAbsenceCount", maleAbsenceCount);
+      console.log("femaleAttendanceCount", femaleAttendanceCount);
+      console.log("femaleAbsenceCount", femaleAbsenceCount);
       let insertIndex = quillRef.current.quill.getLength();
-      let attendanceCounter = 0;
-      for (let i = 0; i < attendanceData[1].length; i++) {
-        const attendanceLogDate = attendanceData[1][i].log_date;
-        if (attendanceLogDate !== null) {
-          attendanceCounter++;
-        }
-      }
       quillRef.current?.quill.insertText(insertIndex, `\n Attendance`, {
         header: 3,
       });
       const tableModule = quillRef.current?.getTable();
       const quill = quillRef.current?.quill;
-      tableModule.insertTable(2, 2);
+      tableModule.insertTable(4, 4);
       const table = quill.root.querySelector("table");
       const rows = table.rows;
 
       //actual diabolical
-      rows[0].cells[0].children[0].innerHTML = "<td>Attendance</td>";
-      rows[0].cells[1].children[0].innerHTML = `<td>${attendanceCounter}</td>`;
+      rows[0].cells[0].children[0].innerHTML = "<td>Male Present</td>";
+      rows[0].cells[1].children[0].innerHTML = `<td>${maleAttendanceCount}</td>`;
+      rows[1].cells[0].children[0].innerHTML = "<td>Male absent</td>";
+      rows[1].cells[1].children[0].innerHTML = `<td>${maleAbsenceCount}</td>`;
+      rows[2].cells[0].children[0].innerHTML = "<td>Female Present</td>";
+      rows[2].cells[1].children[0].innerHTML = `<td>${femaleAttendanceCount}</td>`;
+      rows[3].cells[0].children[0].innerHTML = "<td Female absent</td>";
+      rows[3].cells[1].children[0].innerHTML = `<td>${femaleAbsenceCount}</td>`;
     } catch (error) {
       console.error("Error fetching attendance data:", error);
       setLoading(false);
