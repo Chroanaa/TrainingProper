@@ -4,14 +4,13 @@ import QuillComponent from "../ui/Quill";
 import { Button } from "@mui/material";
 import { insert } from "../../../firebase/POI/createPOI";
 import { generateId } from "../../utils/generateId";
-
 import { useNavigate } from "react-router";
 import { Select, FormControl, InputLabel, MenuItem } from "@mui/material";
 import { getSchedule } from "../../../firebase/Schedule/getSchedule";
 import ConfirmDialog from "../ui/ConfirmDialog";
-import { useDebounce } from "../../hooks/useDebounce";
 import { saveToLocalStorage } from "../../utils/saveToLocalStorage";
 import html2pdf from "html2pdf.js";
+import AddTableModal from "../AddTableModal";
 
 function UploadMaterialPanel({ value, index }) {
   const navigate = useNavigate();
@@ -21,6 +20,7 @@ function UploadMaterialPanel({ value, index }) {
   const [semester, setSemester] = React.useState("");
   const [schedule, setSchedule] = React.useState([]);
   const [quillContent, setQuillContent] = React.useState("");
+  const [openAddTableModal, setOpenAddTableModal] = React.useState(false);
   const [disabled, setDisabled] = React.useState(true);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
     isOpen: false,
@@ -224,7 +224,19 @@ function UploadMaterialPanel({ value, index }) {
           >
             Download
           </Button>
+          <Button
+            variant='contained'
+            onClick={() => setOpenAddTableModal(true)}
+          >
+            Add Table
+          </Button>
         </div>
+        <AddTableModal
+          open={openAddTableModal}
+          onClose={() => setOpenAddTableModal(false)}
+          tableModule={quillRef.current?.getTable()}
+        />
+
         {renderDialog()}
       </CustomTabPanel>
     </div>
