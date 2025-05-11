@@ -1,13 +1,17 @@
 import React from "react";
 import { NavLink, Outlet } from "react-router";
 import Logo from "../assets/images/logo.png";
-
+import { Button } from "@mui/material";
+import LogoutModal from "./LogoutModal";
+import { AuthContext } from "../../Auth/AuthProvider";
 function Header() {
+  const { logout } = React.useContext(AuthContext);
   const currentLink = ({ isActive }) => {
     return {
       color: isActive ? "#FFD700" : "white",
     };
   };
+  const [open, setOpen] = React.useState(false);
   return (
     <div className='flex flex-col justify-start items-start bg-[#4B5320] h-screen w-[20%] p-2'>
       <div className=' mb-5'>
@@ -57,6 +61,24 @@ function Header() {
         >
           INCIDENT REPORT{" "}
         </NavLink>
+        <Button
+          onClick={() => {
+            setOpen(true);
+          }}
+          className='text-[0.7rem] text-white hover:text-[#FFD700]'
+        >
+          Logout
+        </Button>
+        <LogoutModal
+          open={open}
+          handleClose={() => setOpen(false)}
+          handleLeaveEvent={() => {
+            sessionStorage.removeItem("token");
+            setOpen(false);
+            logout();
+            window.location.reload();
+          }}
+        />
       </div>
     </div>
   );
