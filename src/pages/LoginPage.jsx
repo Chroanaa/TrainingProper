@@ -32,6 +32,7 @@ function LoginPage() {
       navigate("/", { replace: true });
     } catch (error) {
       console.error("Error logging in:", error);
+      //Gawa ka ng message dito boy please na error na mag aalert
     } finally {
       setLoading(false);
     }
