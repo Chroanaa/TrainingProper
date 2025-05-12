@@ -61,6 +61,14 @@ function Header() {
         >
           INCIDENT REPORT{" "}
         </NavLink>
+        <NavLink
+          className='text-[0.7rem] text-white hover:text-[#FFD700]'
+          style={currentLink}
+          to={"/SendDocument"}
+        >
+          Send Document
+        </NavLink>
+
         <Button
           onClick={() => {
             setOpen(true);

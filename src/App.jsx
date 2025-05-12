@@ -20,6 +20,7 @@ import AuthProvider from "../Auth/AuthProvider";
 import { AuthContext } from "../Auth/AuthProvider";
 import LoginPage from "./pages/LoginPage";
 import RequireAuth from "../Auth/RequireAuth";
+
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -38,6 +39,7 @@ function App() {
             />
             <Route path='IncidentReport' element={<IncidentReport />} />
             <Route path='TrainingReport' element={<TrainingReport />} />
+
             <Route
               path='TrainingReport/:id'
               element={<ViewATR />}

@@ -17,7 +17,7 @@ function SendDocument() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost/backend/api.php",
+        "http://localhost/backend/sendEmailApi.php",
         formData,
         {
           headers: {
