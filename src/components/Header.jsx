@@ -23,7 +23,6 @@ function Header() {
           Reserve Officer’s Training Corps
         </p>
       </div>
-
       <div className='mt-5 flex flex-col gap-1'>
         <NavLink
           to='CourseMaterialPrep'
