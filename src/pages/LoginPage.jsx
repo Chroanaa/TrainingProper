@@ -28,12 +28,7 @@ function LoginPage() {
       newErrors.username = "Username is required";
     }
     
-    if (!inputValue.password) {
-      newErrors.password = "Password is required";
-    } else if (inputValue.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };

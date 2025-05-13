@@ -65,7 +65,7 @@ function Header() {
           style={currentLink}
           to={"/SendDocument"}
         >
-          Send Document
+          SEND DOCUMENT
         </NavLink>
 
         <Button
