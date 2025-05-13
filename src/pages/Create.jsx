@@ -5,7 +5,6 @@ import QuillComponent from "../components/ui/Quill";
 import { Button } from "@mui/material";
 import { saveAs } from "file-saver";
 import { pdfExporter } from "quill-to-pdf";
-import { getReports } from "../../firebase/Report/getReports";
 import AlertDialog from "../components/ui/AlertDialog";
 import ConfirmDialog from "../components/ui/ConfirmDialog";
 import { saveToLocalStorage } from "../utils/saveToLocalStorage";
@@ -14,11 +13,18 @@ import Loading from "../components/ui/Loading";
 import html2pdf from "html2pdf.js";
 import AddTableModal from "../components/AddTableModal";
 import { getAttendance } from "../../mysql/getAttendance";
+import { getReportDates } from "../../firebase/Report/getReportDates";
+import { getReportByDate } from "../../firebase/Report/getReportByDate";
+import SelectDateDialog from "../components/ui/SelectDateDialog";
 function Create() {
   const quillRef = React.useRef(null);
   const [title, setTitle] = React.useState("Untitled");
   const [openAaddTableModal, setOpenAddTableModal] = React.useState(false);
   const [reports, setReports] = React.useState([]);
+  const [reportDates, setReportDates] = React.useState([]);
+  const [selectedDate, setSelectedDate] = React.useState("");
+  const [openSelectDateDialog, setOpenSelectDateDialog] = React.useState(false);
+
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
     isOpen: false,
     dialog: "",
@@ -28,15 +34,11 @@ function Create() {
   const [quillContent, setQuillContent] = React.useState("");
   const debouncedTitle = useDebounce(title, 500);
 
-  // fetches and listens to any updates to the database and updates the pagese
   React.useEffect(() => {
-    const unsubscribe = getReports((data) => {
-      setReports(data);
+    const unsubscribe = getReportDates((data) => {
+      setReportDates(data);
     });
-
-    return () => {
-      unsubscribe();
-    };
+    console.log("reportDates", reportDates);
   }, []);
 
   // gets the atttendance and renders it to the quill editor
@@ -100,6 +102,12 @@ function Create() {
       quillRef.current?.setHtml(savedContent);
     }
   }, []);
+  React.useEffect(() => {
+    if (reports && reports.length > 0) {
+      console.log("Reports state updated, rendering reports");
+      handleGetReports();
+    }
+  }, [reports]);
   const timeCreated = new Date().toISOString();
   const handleSave = async () => {
     const html = quillRef.current?.getHtml();
@@ -116,15 +124,12 @@ function Create() {
   const handleOnChange = (e) => {
     setTitle(e.target.value);
   };
-
-  // this function is used to add a table to the quill editor
-  // gets the reports from the database and renders them to the quill editor
   const handleGetReports = () => {
     if (!reports || reports.length === 0) {
       quillRef.current?.setHtml("<h2>No Reports Available</h2>");
       return;
     }
-
+    console.log("reports", reports);
     let insertIndex = quillRef.current.quill.getLength();
     quillRef.current?.quill.insertText(insertIndex, "Reports", { header: 2 });
 
@@ -147,16 +152,13 @@ function Create() {
 
       quillRef.current?.quill.insertText(
         insertIndex,
-        `\n Time Reported: ${new Date(reportData.createdAt).toLocaleString(
-          "en-US",
-          {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        )}`,
+        `\n Time Reported: ${new Date(reportData.date).toLocaleString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        })}`,
         { header: 5 }
       );
       insertIndex = quillRef.current.quill.getLength();
@@ -179,7 +181,18 @@ function Create() {
 
     html2pdf().set(options).from(html).save();
   };
-
+  const getReports = async (date) => {
+    try {
+      setLoading(true);
+      console.log("Fetching reports for date:", date);
+      const data = await getReportByDate(date);
+      setReports(data);
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   // Dialogs for each button
   const renderConfirmDialog = () => {
     switch (openConfirmDialog.dialog) {
@@ -306,12 +319,7 @@ function Create() {
           <Button
             variant='contained'
             class='bg-[#2C2C2C] text-white px-5 p-2 rounded-b-sm'
-            onClick={() =>
-              setOpenConfirmDialog({
-                isOpen: true,
-                dialog: "getReports",
-              })
-            }
+            onClick={() => setOpenSelectDateDialog(true)}
           >
             Get Current Incident Reports
           </Button>
@@ -358,6 +366,18 @@ function Create() {
             open={openAaddTableModal}
             onClose={() => setOpenAddTableModal(false)}
             tableModule={quillRef.current?.getTable()}
+          />
+          <SelectDateDialog
+            open={openSelectDateDialog}
+            onClose={() => setOpenSelectDateDialog(false)}
+            onChange={(e) => {
+              setSelectedDate(e.target.value);
+            }}
+            onSubmit={() => {
+              setOpenSelectDateDialog(false);
+              getReports(selectedDate);
+            }}
+            Dates={reportDates}
           />
         </div>
       </div>
