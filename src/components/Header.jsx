@@ -4,6 +4,16 @@ import Logo from "../assets/images/logo.png";
 import { Button } from "@mui/material";
 import LogoutModal from "./LogoutModal";
 import { AuthContext } from "../../Auth/AuthProvider";
+// Import icons
+import {
+  BookOpen,
+  Calendar,
+  FileText,
+  FilePlus,
+  AlertTriangle,
+  Send,
+  LogOut
+} from "lucide-react";
 
 function Header() {
   const { logout } = React.useContext(AuthContext);
@@ -26,57 +36,63 @@ function Header() {
           QUEZON CITY UNIVERSITY
         </p>
         <p className='text-white text-[0.7rem] text-center'>
-          Reserve Officer’s Training Corps
+          Reserve Officer's Training Corps
         </p>
       </div>
 
       <nav className='flex flex-col gap-2 mt-4 w-full'>
         <NavLink
           to='CourseMaterialPrep'
-          className='text-[0.75rem] hover:text-[#FFD700]'
+          className='text-[0.75rem] hover:text-[#FFD700] flex items-center gap-2'
           style={currentLink}
         >
-          COURSE MATERIAL PREPARATION
+          <BookOpen size={16} />
+          <span>COURSE MATERIAL PREPARATION</span>
         </NavLink>
 
         <NavLink
           to='/List'
-          className='text-[0.75rem] hover:text-[#FFD700]'
+          className='text-[0.75rem] hover:text-[#FFD700] flex items-center gap-2'
           style={currentLink}
         >
-          TRAINING PROGRAM
+          <Calendar size={16} />
+          <span>TRAINING PROGRAM</span>
         </NavLink>
 
         <NavLink
           to='/TrainingReport'
-          className='text-[0.75rem] hover:text-[#FFD700]'
+          className='text-[0.75rem] hover:text-[#FFD700] flex items-center gap-2'
           style={currentLink}
         >
-          TRAINING REPORT
+          <FileText size={16} />
+          <span>TRAINING REPORT</span>
         </NavLink>
 
         <NavLink
           to='Create'
-          className='text-[0.75rem] hover:text-[#FFD700]'
+          className='text-[0.75rem] hover:text-[#FFD700] flex items-center gap-2'
           style={currentLink}
         >
-          REPORT CREATION
+          <FilePlus size={16} />
+          <span>REPORT CREATION</span>
         </NavLink>
 
         <NavLink
           to='IncidentReport'
-          className='text-[0.75rem] hover:text-[#FFD700]'
+          className='text-[0.75rem] hover:text-[#FFD700] flex items-center gap-2'
           style={currentLink}
         >
-          INCIDENT REPORT
+          <AlertTriangle size={16} />
+          <span>INCIDENT REPORT</span>
         </NavLink>
 
         <NavLink
           to='/SendDocument'
-          className='text-[0.75rem] hover:text-[#FFD700]'
+          className='text-[0.75rem] hover:text-[#FFD700] flex items-center gap-2'
           style={currentLink}
         >
-          SEND DOCUMENT
+          <Send size={16} />
+          <span>SEND DOCUMENT</span>
         </NavLink>
 
         <Button
@@ -86,13 +102,18 @@ function Header() {
             color: "white",
             textTransform: "none",
             fontSize: "0.75rem",
+            padding: "0.5rem",
             "&:hover": {
               color: "#FFD700",
               backgroundColor: "transparent",
             },
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
           }}
         >
-          LOGOUT
+          <LogOut size={16} />
+          <span>LOGOUT</span>
         </Button>
       </nav>
 

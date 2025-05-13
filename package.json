@@ -23,6 +23,7 @@
     "file-saver": "^2.0.5",
     "firebase": "^11.6.0",
     "html2pdf.js": "^0.10.3",
+    "lucide-react": "^0.510.0",
     "quill": "^2.0.3",
     "quill-better-table": "^1.2.10",
     "quill-delta": "^5.1.0",
