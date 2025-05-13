@@ -47,7 +47,7 @@ function Create() {
       setLoading(true);
       const data = await getAttendance();
       const attendanceData = Object.values(data);
-
+  
       const maleAttendanceCount = attendanceData[1];
       const maleAbsenceCount = attendanceData[2];
       const femaleAttendanceCount = attendanceData[3];
@@ -56,25 +56,85 @@ function Create() {
       console.log("maleAbsenceCount", maleAbsenceCount);
       console.log("femaleAttendanceCount", femaleAttendanceCount);
       console.log("femaleAbsenceCount", femaleAbsenceCount);
+      
       let insertIndex = quillRef.current.quill.getLength();
       quillRef.current?.quill.insertText(insertIndex, `\n Attendance`, {
         header: 3,
       });
+      
       const tableModule = quillRef.current?.getTable();
       const quill = quillRef.current?.quill;
-      tableModule.insertTable(4, 4);
+      
+      // Create a 5x3 table (including header row)
+      tableModule.insertTable(5, 3);
       const table = quill.root.querySelector("table");
+      
+      // Apply styling directly to table
+      table.style.borderCollapse = "collapse";
+      table.style.width = "100%";
+      table.style.marginTop = "10px";
+      table.style.border = "1px solid #ccc";
+  
       const rows = table.rows;
-
-      //actual diabolical
-      rows[0].cells[0].children[0].innerHTML = "<td>Male Present</td>";
-      rows[0].cells[1].children[0].innerHTML = `<td>${maleAttendanceCount}</td>`;
-      rows[1].cells[0].children[0].innerHTML = "<td>Male absent</td>";
-      rows[1].cells[1].children[0].innerHTML = `<td>${maleAbsenceCount}</td>`;
-      rows[2].cells[0].children[0].innerHTML = "<td>Female Present</td>";
-      rows[2].cells[1].children[0].innerHTML = `<td>${femaleAttendanceCount}</td>`;
-      rows[3].cells[0].children[0].innerHTML = "<td Female absent</td>";
-      rows[3].cells[1].children[0].innerHTML = `<td>${femaleAbsenceCount}</td>`;
+      
+      // Style all cells and add header styling to first row
+      for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        
+        // Add header row styling
+        if (i === 0) {
+          row.style.backgroundColor = "#f2f2f2";
+          row.style.fontWeight = "bold";
+        }
+        
+        for (let j = 0; j < row.cells.length; j++) {
+          const cell = row.cells[j];
+          const content = cell.children[0];
+      
+          // Add consistent cell styling
+          cell.style.border = "1px solid #ccc";
+          cell.style.padding = "8px";
+      
+          content.style.padding = "5px";
+          content.style.display = "block";
+          content.style.fontSize = "14px";
+          
+          // Make header cells bold
+          if (i === 0) {
+            content.style.fontWeight = "bold";
+          }
+        }
+      }
+      
+      // Set header row content
+      rows[0].cells[0].children[0].innerHTML = "Category";
+      rows[0].cells[1].children[0].innerHTML = "Present";
+      rows[0].cells[2].children[0].innerHTML = "Absent";
+  
+      // Populate the data rows
+      rows[1].cells[0].children[0].innerHTML = "Male";
+      rows[1].cells[1].children[0].innerHTML = `${maleAttendanceCount}`;
+      rows[1].cells[2].children[0].innerHTML = `${maleAbsenceCount}`;
+  
+      rows[2].cells[0].children[0].innerHTML = "Female";
+      rows[2].cells[1].children[0].innerHTML = `${femaleAttendanceCount}`;
+      rows[2].cells[2].children[0].innerHTML = `${femaleAbsenceCount}`;
+  
+      // Calculate totals
+      const totalPresent = maleAttendanceCount + femaleAttendanceCount;
+      const totalAbsent = maleAbsenceCount + femaleAbsenceCount;
+      
+      rows[3].cells[0].children[0].innerHTML = "Total";
+      rows[3].cells[1].children[0].innerHTML = `${totalPresent}`;
+      rows[3].cells[2].children[0].innerHTML = `${totalAbsent}`;
+      
+      // Calculate grand total
+      const grandTotal = totalPresent + totalAbsent;
+      
+      rows[4].cells[0].children[0].innerHTML = "Grand Total";
+      rows[4].cells[1].children[0].innerHTML = `${grandTotal}`;
+      rows[4].cells[2].children[0].innerHTML = "";
+      
     } catch (error) {
       console.error("Error fetching attendance data:", error);
       setLoading(false);
@@ -82,7 +142,6 @@ function Create() {
       setLoading(false);
     }
   };
-
   // this checks if the user is trying to leave the page and prompts them to save their work
   React.useEffect(() => {
     window.addEventListener("beforeunload", handleBeforeUnload);

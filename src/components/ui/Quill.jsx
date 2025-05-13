@@ -2,22 +2,21 @@ import React, { useImperativeHandle, forwardRef } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import QuillResizeImage from "quill-resize-image";
-import { ref } from "firebase/database";
 import QuillBetterTable from "quill-better-table";
 import "quill-better-table/dist/quill-better-table.css";
+
 Quill.register("modules/resize", QuillResizeImage);
-Quill.register(
-  {
-    "modules/better-table": QuillBetterTable,
-  },
-  true
-);
+Quill.register({
+  "modules/better-table": QuillBetterTable,
+}, true);
+
 function QuillComponent(props, ref) {
   const editorRef = React.useRef(null);
   const quillInstanceRef = React.useRef(null);
+
   React.useEffect(() => {
-    if (!editorRef.current) return;
-    if (quillInstanceRef.current) return;
+    if (!editorRef.current || quillInstanceRef.current) return;
+
     quillInstanceRef.current = new Quill(editorRef.current, {
       theme: "snow",
       modules: {
@@ -30,8 +29,6 @@ function QuillComponent(props, ref) {
           [{ list: "ordered" }, { list: "bullet" }],
           [{ align: [] }],
           [{ color: [] }, { background: [] }],
-          ["align"],
-          ["color", "background"],
         ],
         "better-table": {
           operationMenu: {
@@ -42,6 +39,10 @@ function QuillComponent(props, ref) {
               },
             },
           },
+          color: {
+            row: "#f4f4f4",
+            column: "#f4f4f4",
+          },
         },
         resize: {
           locale: {
@@ -50,31 +51,42 @@ function QuillComponent(props, ref) {
         },
       },
     });
+
+    // Add global table styles
+    const style = document.createElement("style");
+    style.innerHTML = `
+      .quill-editor table {
+        width: 100% !important;
+        border-collapse: collapse;
+        margin-top: 10px;
+        border: 1px solid #ccc;
+      }
+      .quill-editor td, .quill-editor th {
+        border: 1px solid #ccc;
+        padding: 8px;
+        font-size: 14px;
+      }
+    `;
+    document.head.appendChild(style);
   }, []);
+
   useImperativeHandle(ref, () => ({
-    getHtml: () => {
-      return quillInstanceRef.current.root.innerHTML;
-    },
+    getHtml: () => quillInstanceRef.current.root.innerHTML,
     setHtml: (html) => {
       quillInstanceRef.current.root.innerHTML = html;
     },
-    getContents: () => {
-      return quillInstanceRef.current.getContents();
-    },
+    getContents: () => quillInstanceRef.current.getContents(),
     onChange: (callback) => {
       quillInstanceRef.current.on("text-change", () => {
         const html = quillInstanceRef.current.root.innerHTML;
         callback(html);
       });
     },
-    getTable: () => {
-      const table = quillInstanceRef.current.getModule("better-table");
-
-      return table;
-    },
+    getTable: () => quillInstanceRef.current.getModule("better-table"),
     quill: quillInstanceRef.current,
   }));
-  return <div ref={editorRef} className='quill-editor'></div>;
+
+  return <div ref={editorRef} className="quill-editor"></div>;
 }
 
-export default forwardRef(QuillComponent, ref);
+export default forwardRef(QuillComponent);
