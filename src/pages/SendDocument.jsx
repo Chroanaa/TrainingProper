@@ -2,6 +2,8 @@ import axios from "axios";
 import React from "react";
 import { generateId } from "../utils/generateId";
 import { Button } from "@mui/material";
+import { insertDocument } from "../../firebase/Document/insertDocument";
+import { fetchDocument } from "../../firebase/Document/fetchDocument";
 function SendDocument() {
   const [input, setInput] = React.useState(null);
   const inputRef = React.useRef(null);
@@ -27,8 +29,11 @@ function SendDocument() {
       progress: 0,
     };
     setUploads((prevUploads) => [...prevUploads, upload]);
-
-    sessionStorage.setItem(requestId, JSON.stringify(upload));
+    insertDocument({
+      id: requestId,
+      name: input.name,
+      status: "uploading",
+    });
     inputRef.current.value = null;
 
     try {
@@ -51,10 +56,11 @@ function SendDocument() {
               ? { ...upload, status: "completed" }
               : upload
           ),
-        sessionStorage.setItem(
-          requestId,
-          JSON.stringify({ ...upload, status: "completed" })
-        )
+        insertDocument({
+          id: requestId,
+          name: input.name,
+          status: "completed",
+        })
       );
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -74,39 +80,9 @@ function SendDocument() {
     const isCleanNavigation =
       sessionStorage.getItem("cleanNavigation") === "true";
     sessionStorage.removeItem("cleanNavigation");
-
     const currentUploads = [];
-
     const pageAccessedByReload =
       window.performance.getEntriesByType("navigation")[0]?.type === "reload";
-
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i);
-      const value = sessionStorage.getItem(key);
-
-      if (key && value && key !== "cleanNavigation") {
-        try {
-          const parsedValue = JSON.parse(value);
-
-          if (
-            pageAccessedByReload &&
-            !isCleanNavigation &&
-            parsedValue.status === "uploading"
-          ) {
-            parsedValue.status = "error";
-            parsedValue.errorMessage = "Upload interrupted by page refresh";
-            sessionStorage.setItem(key, JSON.stringify(parsedValue));
-          }
-
-          currentUploads.push(parsedValue);
-        } catch (error) {
-          console.error("Error parsing storage item:", error);
-        }
-      }
-    }
-
-    setUploads(currentUploads);
-
     return () => {
       sessionStorage.setItem("cleanNavigation", "true");
     };
@@ -124,6 +100,17 @@ function SendDocument() {
         }
       });
     };
+  });
+  React.useEffect(() => {
+    const unsubscribe = fetchDocument((documents) => {
+      const currentUploads = [];
+      documents.map((document) => {
+        if (document.status === "uploading") {
+          currentUploads.push(document);
+        }
+      });
+      setUploads(currentUploads);
+    });
   });
   const handleBeforeUnload = (e) => {
     e.preventDefault();
