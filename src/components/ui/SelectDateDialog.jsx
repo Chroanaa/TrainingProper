@@ -7,6 +7,8 @@ import {
   Select,
   FormControl,
   MenuItem,
+  InputLabel,
+  Box,
 } from "@mui/material";
 
 function SelectDateDialog({
@@ -18,13 +20,15 @@ function SelectDateDialog({
   selectedDate,
 }) {
   return (
-    <div>
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Select Date</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+      <DialogTitle>Select Date</DialogTitle>
+      <DialogContent>
+        <Box display="flex" flexDirection="column" gap={3} mt={1}>
+          <FormControl fullWidth variant="outlined" size="medium">
+            <InputLabel id="select-date-label">Select Date</InputLabel>
             <Select
-              label='Select Date'
+              labelId="select-date-label"
+              label="Select Date"
               value={selectedDate}
               onChange={onChange}
             >
@@ -35,12 +39,18 @@ function SelectDateDialog({
               ))}
             </Select>
           </FormControl>
-          <Button variant='contained' color='primary' onClick={onSubmit}>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onSubmit}
+            sx={{ alignSelf: "flex-end" }}
+          >
             Submit
           </Button>
-        </DialogContent>
-      </Dialog>
-    </div>
+        </Box>
+      </DialogContent>
+    </Dialog>
   );
 }
 

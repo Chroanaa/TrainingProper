@@ -1,25 +1,33 @@
 import React from "react";
-import { Button, Dialog, DialogTitle, DialogContent } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+} from "@mui/material";
 
 function ConfirmDialog({ open, onClose, onConfirm, title, message }) {
   const handleConfirm = () => {
     onConfirm();
   };
+
   return (
-    <div>
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>{title}</DialogTitle>
-        <DialogContent>
-          <p>{message}</p>
-          <Button variant='contained' color='primary' onClick={handleConfirm}>
-            Confirm
-          </Button>
-          <Button variant='outlined' color='secondary' onClick={onClose}>
-            Cancel
-          </Button>
-        </DialogContent>
-      </Dialog>
-    </div>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+      <DialogTitle>{title}</DialogTitle>
+      <DialogContent dividers>
+        <Typography variant="body1">{message}</Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="outlined" color="secondary" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button variant="contained" color="primary" onClick={handleConfirm}>
+          Confirm
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 }
 
