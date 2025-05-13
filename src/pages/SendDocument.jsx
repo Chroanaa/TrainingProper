@@ -1,6 +1,7 @@
 import axios from "axios";
 import React from "react";
 import { generateId } from "../utils/generateId";
+import { Button } from "@mui/material";
 function SendDocument() {
   const [input, setInput] = React.useState(null);
   const inputRef = React.useRef(null);
@@ -42,6 +43,7 @@ function SendDocument() {
       );
       const { request_id } = response.data;
       // Update the status of this specific upload to completed
+
       setUploads(
         (prevUploads) =>
           prevUploads.map((upload) =>
@@ -69,16 +71,45 @@ function SendDocument() {
     }
   };
   React.useEffect(() => {
+    const isCleanNavigation =
+      sessionStorage.getItem("cleanNavigation") === "true";
+    sessionStorage.removeItem("cleanNavigation");
+
     const currentUploads = [];
+
+    const pageAccessedByReload =
+      window.performance.getEntriesByType("navigation")[0]?.type === "reload";
+
     for (let i = 0; i < sessionStorage.length; i++) {
       const key = sessionStorage.key(i);
       const value = sessionStorage.getItem(key);
-      if (key && value) {
-        const parsedValue = JSON.parse(value);
-        currentUploads.push(parsedValue);
+
+      if (key && value && key !== "cleanNavigation") {
+        try {
+          const parsedValue = JSON.parse(value);
+
+          if (
+            pageAccessedByReload &&
+            !isCleanNavigation &&
+            parsedValue.status === "uploading"
+          ) {
+            parsedValue.status = "error";
+            parsedValue.errorMessage = "Upload interrupted by page refresh";
+            sessionStorage.setItem(key, JSON.stringify(parsedValue));
+          }
+
+          currentUploads.push(parsedValue);
+        } catch (error) {
+          console.error("Error parsing storage item:", error);
+        }
       }
     }
+
     setUploads(currentUploads);
+
+    return () => {
+      sessionStorage.setItem("cleanNavigation", "true");
+    };
   }, []);
   React.useEffect(() => {
     uploads.map((upload) => {
@@ -97,6 +128,12 @@ function SendDocument() {
   const handleBeforeUnload = (e) => {
     e.preventDefault();
   };
+  const handleResendFile = (id) => {
+    const upload = uploads.filter((upload) => upload.id !== id);
+    setUploads(upload);
+    sessionStorage.removeItem(id);
+    inputRef.current.click();
+  };
   const handleRenderProgress = () => {
     return uploads.map((upload) => {
       if (upload.status === "uploading") {
@@ -109,10 +146,22 @@ function SendDocument() {
       } else if (upload.status === "completed") {
         return <p key={upload.id}>{upload.name} - Completed</p>;
       } else if (upload.status === "error") {
-        return <p key={upload.id}>{upload.name} - Error</p>;
+        return (
+          <p key={upload.id}>
+            {upload.name} - Error{" "}
+            <Button
+              onClick={() => {
+                handleResendFile(upload.id);
+              }}
+            >
+              Try Again
+            </Button>
+          </p>
+        );
       }
     });
   };
+
   return (
     <div>
       <h1>Training List</h1>
