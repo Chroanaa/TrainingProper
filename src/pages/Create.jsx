@@ -52,6 +52,7 @@ function Create() {
       const maleAbsenceCount = attendanceData[2];
       const femaleAttendanceCount = attendanceData[3];
       const femaleAbsenceCount = attendanceData[4];
+  
       console.log("maleAttendanceCount", maleAttendanceCount);
       console.log("maleAbsenceCount", maleAbsenceCount);
       console.log("femaleAttendanceCount", femaleAttendanceCount);
@@ -62,9 +63,8 @@ function Create() {
         header: 3,
       });
   
-      // Insert a raw HTML table into the editor (custom layout copied from image)
       const customTableHTML = `
-        <table border="1" style="border-collapse: collapse; text-align: center;">
+        <table border="1" style="border-collapse: collapse; text-align: center; width: 100%;">
           <thead>
             <tr>
               <th rowspan="2">CADET OFFICERS</th>
@@ -89,12 +89,12 @@ function Create() {
           <tbody>
             <tr>
               <td>MS 42</td>
-              <td>0</td>
-              <td style="color:red;">0</td>
-              <td>0</td>
-              <td style="color:red;">0</td>
-              <td>0</td>
-              <td>0</td>
+              <td>${maleAttendanceCount}</td>
+              <td style="color:red;">${maleAbsenceCount}</td>
+              <td>${femaleAttendanceCount}</td>
+              <td style="color:red;">${femaleAbsenceCount}</td>
+              <td>${maleAbsenceCount + femaleAbsenceCount}</td>
+              <td>${maleAttendanceCount + femaleAttendanceCount}</td>
             </tr>
             <tr>
               <td>MS 32</td>
@@ -116,12 +116,12 @@ function Create() {
             </tr>
             <tr>
               <td><strong>TOTAL</strong></td>
-              <td><strong>0</strong></td>
-              <td><strong>0</strong></td>
-              <td><strong>0</strong></td>
-              <td><strong>0</strong></td>
-              <td><strong>0</strong></td>
-              <td><strong>0</strong></td>
+              <td><strong>${maleAttendanceCount}</strong></td>
+              <td><strong style="color:red;">${maleAbsenceCount}</strong></td>
+              <td><strong>${femaleAttendanceCount}</strong></td>
+              <td><strong style="color:red;">${femaleAbsenceCount}</strong></td>
+              <td><strong>${maleAbsenceCount + femaleAbsenceCount}</strong></td>
+              <td><strong>${maleAttendanceCount + femaleAttendanceCount}</strong></td>
             </tr>
           </tbody>
         </table>
@@ -135,6 +135,7 @@ function Create() {
       setLoading(false);
     }
   };
+  
   
 
   // this checks if the user is trying to leave the page and prompts them to save their work
