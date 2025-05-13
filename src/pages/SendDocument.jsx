@@ -2,8 +2,7 @@ import axios from "axios";
 import React from "react";
 import { generateId } from "../utils/generateId";
 import { Button } from "@mui/material";
-import { insertDocument } from "../../firebase/Document/insertDocument";
-import { fetchDocument } from "../../firebase/Document/fetchDocument";
+
 function SendDocument() {
   const [input, setInput] = React.useState(null);
   const inputRef = React.useRef(null);
@@ -29,11 +28,7 @@ function SendDocument() {
       progress: 0,
     };
     setUploads((prevUploads) => [...prevUploads, upload]);
-    insertDocument({
-      id: requestId,
-      name: input.name,
-      status: "uploading",
-    });
+    sessionStorage.setItem(requestId, JSON.stringify(upload));
     inputRef.current.value = null;
 
     try {
@@ -47,8 +42,6 @@ function SendDocument() {
         }
       );
       const { request_id } = response.data;
-      // Update the status of this specific upload to completed
-
       setUploads(
         (prevUploads) =>
           prevUploads.map((upload) =>
@@ -56,15 +49,13 @@ function SendDocument() {
               ? { ...upload, status: "completed" }
               : upload
           ),
-        insertDocument({
-          id: requestId,
-          name: input.name,
-          status: "completed",
-        })
+        sessionStorage.setItem(
+          requestId,
+          JSON.stringify({ ...upload, status: "completed" })
+        )
       );
     } catch (error) {
       console.error("Error uploading file:", error);
-      // Update the status of this specific upload to error
       setUploads(
         (prevUploads) =>
           prevUploads.map((upload) =>
@@ -80,12 +71,59 @@ function SendDocument() {
     const isCleanNavigation =
       sessionStorage.getItem("cleanNavigation") === "true";
     sessionStorage.removeItem("cleanNavigation");
+
     const currentUploads = [];
+
     const pageAccessedByReload =
       window.performance.getEntriesByType("navigation")[0]?.type === "reload";
+
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i);
+      const value = sessionStorage.getItem(key);
+      if (key && value && key !== "cleanNavigation") {
+        try {
+          const parsedValue = JSON.parse(value);
+
+          if (
+            pageAccessedByReload &&
+            !isCleanNavigation &&
+            parsedValue.status === "uploading"
+          ) {
+            parsedValue.status = "error";
+            parsedValue.errorMessage = "Upload interrupted by page refresh";
+            sessionStorage.setItem(key, JSON.stringify(parsedValue));
+          }
+
+          currentUploads.push(parsedValue);
+        } catch (error) {
+          console.error("Error parsing storage item:", error);
+        }
+      }
+    }
+    setUploads(currentUploads);
     return () => {
       sessionStorage.setItem("cleanNavigation", "true");
     };
+  }, []);
+  React.useEffect(() => {
+    const intervalId = setInterval(() => {
+      const currentUploads = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        const value = sessionStorage.getItem(key);
+        if (key && value && key !== "cleanNavigation") {
+          try {
+            const parsedValue = JSON.parse(value);
+            currentUploads.push(parsedValue);
+          } catch (error) {
+            console.error("Error parsing storage item:", error);
+          }
+        }
+      }
+      setUploads(currentUploads);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
   }, []);
   React.useEffect(() => {
     uploads.map((upload) => {
@@ -100,17 +138,6 @@ function SendDocument() {
         }
       });
     };
-  });
-  React.useEffect(() => {
-    const unsubscribe = fetchDocument((documents) => {
-      const currentUploads = [];
-      documents.map((document) => {
-        if (document.status === "uploading") {
-          currentUploads.push(document);
-        }
-      });
-      setUploads(currentUploads);
-    });
   });
   const handleBeforeUnload = (e) => {
     e.preventDefault();
