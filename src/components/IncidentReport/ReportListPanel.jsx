@@ -52,6 +52,7 @@ function ReportListPanel({ value, reports }) {
                 content={report.description}
                 id={index}
               />
+              <div className='flex gap-1 mt-2'>
               <Button
                 variant='contained'
                 onClick={() => {
@@ -67,6 +68,7 @@ function ReportListPanel({ value, reports }) {
               >
                 Delete
               </Button>
+              </div>
               <DeleteDialog
                 open={openDeleteDialog}
                 onClose={() => setopenDeleteDialog(false)}
