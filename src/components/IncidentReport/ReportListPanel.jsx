@@ -1,25 +1,37 @@
 import React from "react";
 import CustomTabPanel from "../ui/CustomTabPanel";
 import AccordionExpand from "../ui/AccordionExpand";
-import { Button } from "@mui/material";
+import { Button, Box, Modal, TextField, Typography, Paper, Grid, IconButton } from "@mui/material";
 import { deleteReport } from "../../../firebase/Report/deleteReport";
-import { Box, Modal } from "@mui/material";
 import { getReport } from "../../../firebase/Report/getReport";
 import { updateReport } from "../../../firebase/Report/updateReport";
 import DeleteDialog from "../ui/DeleteDialog";
 import ConfirmDialog from "../ui/ConfirmDialog";
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SaveIcon from "@mui/icons-material/Save";
+
 function ReportListPanel({ value, reports }) {
   const [report, setReport] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [openDeleteDialog, setopenDeleteDialog] = React.useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState(false);
+  const [selectedReportId, setSelectedReportId] = React.useState(null);
+
   const handleOpen = () => setOpen(!open);
-  const handleopenDeleteDialog = () => setopenDeleteDialog(!openDeleteDialog);
+  
+  const handleopenDeleteDialog = (reportId) => {
+    setSelectedReportId(reportId);
+    setopenDeleteDialog(true);
+  };
+  
   const openEditModal = async (reportId) => {
     console.log(reportId);
     const reportData = await getReport(reportId);
     setReport(reportData);
   };
+  
   const handleDeleteReport = async (reportId) => {
     try {
       await deleteReport(reportId);
@@ -28,6 +40,7 @@ function ReportListPanel({ value, reports }) {
       console.error("Error deleting report:", error);
     }
   };
+  
   const handleUpdateReport = async () => {
     try {
       await updateReport(report.id, report);
@@ -41,80 +54,142 @@ function ReportListPanel({ value, reports }) {
   return (
     <div>
       <CustomTabPanel value={value} index={0}>
-        <h2 className='text-[1.5rem]'>Report List</h2>
-        <p>Here is the list of reports.</p>
-        <div className='flex flex-col gap-2'>
+        <Typography variant="h4" component="h2" gutterBottom>
+          Report List
+        </Typography>
+        <Typography variant="body1" paragraph>
+          Here is the list of reports.
+        </Typography>
+        
+        <div className="flex flex-col gap-4">
           {reports.map((report, index) => (
-            <div key={index}>
+            <Paper 
+              key={index} 
+              elevation={2} 
+              className="p-4 rounded-lg"
+            >
               <AccordionExpand
                 key={index}
                 title={report.title}
                 content={report.description}
                 id={index}
               />
-              <div className='flex gap-1 mt-2'>
-              <Button
-                variant='contained'
-                onClick={() => {
-                  openEditModal(report.id);
-                  setOpen(true);
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                variant='contained'
-                onClick={() => handleopenDeleteDialog()}
-              >
-                Delete
-              </Button>
+              <div className="flex gap-3 mt-4">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<EditIcon />}
+                  onClick={() => {
+                    openEditModal(report.id);
+                    setOpen(true);
+                  }}
+                  size="medium"
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => handleopenDeleteDialog(report.id)}
+                  size="medium"
+                >
+                  Delete
+                </Button>
               </div>
+              
               <DeleteDialog
-                open={openDeleteDialog}
+                open={openDeleteDialog && selectedReportId === report.id}
                 onClose={() => setopenDeleteDialog(false)}
                 onDelete={() => {
-                  handleDeleteReport(report.id);
+                  handleDeleteReport(selectedReportId);
                   setopenDeleteDialog(false);
                 }}
                 title={"Delete Report"}
                 item={"report"}
               />
-            </div>
+            </Paper>
           ))}
         </div>
       </CustomTabPanel>
-      <Modal open={open} onClose={handleOpen}>
-        <Box className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] bg-white border-2 border-black shadow-xl p-4'>
-          <h2 className='text-[1.5rem]'>Edit Report</h2>
-          <p>Title:</p>
-          <input
-            type='text'
-            value={report.title}
-            onChange={(e) => setReport({ ...report, title: e.target.value })}
-          ></input>
-          <p>Description:</p>
-          <textarea
-            type='text'
-            value={report.description}
-            onChange={(e) =>
-              setReport({ ...report, description: e.target.value })
-            }
-          ></textarea>
-          <p>Date:</p>
-          <input
-            type='date'
-            value={report.date}
-            onChange={(e) => setReport({ ...report, date: e.target.value })}
-          ></input>
-          <Button
-            variant='contained'
-            onClick={() => setOpenConfirmDialog(true)}
-          >
-            Save
-          </Button>
-          <Button variant='contained' onClick={handleOpen}>
-            Close
-          </Button>
+      
+      <Modal 
+        open={open} 
+        onClose={handleOpen}
+        aria-labelledby="edit-report-modal"
+        aria-describedby="modal-to-edit-report-details"
+      >
+        <Paper 
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md p-6 rounded-lg shadow-xl"
+          sx={{ maxHeight: '90vh', overflowY: 'auto' }}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <Typography variant="h5" component="h2" id="edit-report-modal">
+              Edit Report
+            </Typography>
+            <IconButton onClick={handleOpen} size="small" aria-label="close">
+              <CloseIcon />
+            </IconButton>
+          </div>
+
+          <div className="w-full space-y-4">
+            <div className="w-full">
+              <TextField
+                label="Title"
+                variant="outlined"
+                value={report.title || ''}
+                onChange={(e) => setReport({ ...report, title: e.target.value })}
+                className="w-full"
+                inputProps={{ className: "w-full" }}
+              />
+            </div>
+            
+            <div className="w-full">
+              <TextField
+                label="Description"
+                variant="outlined"
+                value={report.description || ''}
+                onChange={(e) => setReport({ ...report, description: e.target.value })}
+                multiline
+                rows={4}
+                className="w-full"
+                inputProps={{ className: "w-full" }}
+              />
+            </div>
+            
+            <div className="w-full">
+              <TextField
+                label="Date"
+                type="date"
+                variant="outlined"
+                value={report.date || ''}
+                onChange={(e) => setReport({ ...report, date: e.target.value })}
+                className="w-full"
+                inputProps={{ className: "w-full" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </div>
+            
+            <div className="flex justify-end gap-3 mt-6 w-full">
+              <Button 
+                variant="outlined" 
+                onClick={handleOpen}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<SaveIcon />}
+                onClick={() => setOpenConfirmDialog(true)}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+          
           <ConfirmDialog
             open={openConfirmDialog}
             onClose={() => setOpenConfirmDialog(false)}
@@ -122,10 +197,10 @@ function ReportListPanel({ value, reports }) {
               handleUpdateReport();
               setOpenConfirmDialog(false);
             }}
-            title='Confirm Save'
-            message='Are you sure you want to save the changes?'
+            title="Confirm Save"
+            message="Are you sure you want to save the changes?"
           />
-        </Box>
+        </Paper>
       </Modal>
     </div>
   );

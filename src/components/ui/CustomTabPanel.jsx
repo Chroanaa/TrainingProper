@@ -4,7 +4,7 @@ function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
   return (
     <div
-      className='border-2 border-gray-300 rounded-lg p-4 container '
+      className='mt-2 border-1 border-gray-300 rounded-lg p-4 container '
       role='tabpanel'
       hidden={value !== index}
       id={`scrollable-auto-tabpanel-${index}`}
