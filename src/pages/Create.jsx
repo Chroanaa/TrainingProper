@@ -377,6 +377,7 @@ function Create() {
               setOpenSelectDateDialog(false);
               getReports(selectedDate);
             }}
+            selectedDate={selectedDate}
             Dates={reportDates}
           />
         </div>
