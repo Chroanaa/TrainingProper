@@ -28,13 +28,14 @@ function App() {
         <Route path='/login' element={<LoginPage />} />,
         <Route element={<RequireAuth />}>
           <Route path='/' element={<HomeLayout />}>
-            <Route index element={<Home />} />
+            <Route  element={<Home />} />
             <Route path='SendDocument' element={<SendDocument />} />
             <Route path='Create' element={<Create />} />
             <Route path='List' element={<TrainingList />} />
             <Route path='List/:id' element={<ViewPOI />} loader={poiLoader} />
             <Route
               path='CourseMaterialPrep'
+              index
               element={<CourseMaterialPreparation />}
             />
             <Route path='IncidentReport' element={<IncidentReport />} />

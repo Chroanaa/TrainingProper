@@ -12,7 +12,7 @@ export const auth = async (username, password) => {
       if (isPasswordValid) {
         return true;
       } else {
-        throw new Error("Invalid username or password");
+        return false
       }
     }
   }

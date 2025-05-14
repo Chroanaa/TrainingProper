@@ -179,63 +179,73 @@ function Create() {
   const handleOnChange = (e) => {
     setTitle(e.target.value);
   };
-  const handleGetReports = () => {
-    if (!reports || reports.length === 0) {
-      quillRef.current?.setHtml("<h2>No Reports Available</h2>");
-      return;
-    }
-    console.log("reports", reports);
-    let insertIndex = quillRef.current.quill.getLength();
-    quillRef.current?.quill.insertText(insertIndex, "Reports", { header: 2 });
+ const handleGetReports = () => {
+  if (!reports || reports.length === 0) {
+    quillRef.current?.quill.insertText(
+      quillRef.current.quill.getLength(),
+      "\nNo Reports Available",
+      { header: 2 }
+    );
+    return;
+  }
 
-    for (let i = 0; i < reports.length; i++) {
-      const reportData = reports[i];
-      insertIndex = quillRef.current.quill.getLength();
-      quillRef.current?.quill.insertText(
-        insertIndex,
-        `\n Title: ${reportData.title}`,
-        { header: 3 }
-      );
-      insertIndex = quillRef.current.quill.getLength();
+  console.log("reports", reports);
+  let insertIndex = quillRef.current.quill.getLength();
 
-      quillRef.current?.quill.insertText(
-        insertIndex,
-        `\n Description: ${reportData.description}`,
-        { header: 4 }
-      );
-      insertIndex = quillRef.current.quill.getLength();
+  // Append "Reports" header
+  quillRef.current?.quill.insertText(insertIndex, "\nReports", { header: 2 });
+  insertIndex = quillRef.current.quill.getLength();
 
-      quillRef.current?.quill.insertText(
-        insertIndex,
-        `\n Time Reported: ${new Date(reportData.date).toLocaleString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        })}`,
-        { header: 5 }
-      );
-      insertIndex = quillRef.current.quill.getLength();
+  for (let i = 0; i < reports.length; i++) {
+    const reportData = reports[i];
 
-      quillRef.current?.quill.insertText(insertIndex, "\n\n");
-      insertIndex = quillRef.current.quill.getLength();
-    }
-  };
+    quillRef.current?.quill.insertText(
+      insertIndex,
+      `\nTitle: ${reportData.title}`,
+      { header: 3 }
+    );
+    insertIndex = quillRef.current.quill.getLength();
 
-  const handleDownload = () => {
+    quillRef.current?.quill.insertText(
+      insertIndex,
+      `\nDescription: ${reportData.description}`,
+      { header: 4 }
+    );
+    insertIndex = quillRef.current.quill.getLength();
+
+    quillRef.current?.quill.insertText(
+      insertIndex,
+      `\nTime Reported: ${new Date(reportData.date).toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })}`,
+      { header: 5 }
+    );
+    insertIndex = quillRef.current.quill.getLength();
+
+    quillRef.current?.quill.insertText(insertIndex, "\n\n");
+    insertIndex = quillRef.current.quill.getLength();
+  }
+};
+
+const handleDownload = () => {
     const quill = quillRef.current;
     const html = quill.getHtml();
 
     const options = {
-      margin: 1,
       filename: `${title}.pdf`,
+      image: { type: "jpeg", quality: 0.98 }, 
       html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-    };
+      jsPDF: { unit: "in", format: [10, 10], orientation: "landscape" },
+    }; 
 
     html2pdf().set(options).from(html).save();
-  };
+};
+
+   
   const getReports = async (date) => {
     try {
       setLoading(true);

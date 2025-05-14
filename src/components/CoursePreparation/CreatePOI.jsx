@@ -73,36 +73,39 @@ function UploadMaterialPanel({ value, index }) {
     renderSchedule(schedules);
   };
   const renderSchedule = (schedule) => {
-    if (!schedule || !quillRef.current?.quill) {
-      quillRef.current?.setHtml("<h2>No Schedule Available</h2>");
-      return;
-    }
-    quillRef.current.quill.deleteText(0, quillRef.current.quill.getLength());
+  if (!schedule || !quillRef.current?.quill) {
+    quillRef.current?.setHtml("<h2>No Schedule Available</h2>");
+    return;
+  }
 
-    quillRef.current.quill.insertText(0, "Schedule", { header: 2 });
-    let insertIndex = quillRef.current.quill.getLength();
+  // Get the current length of the content
+  let insertIndex = quillRef.current.quill.getLength();
 
-    for (let i = 0; i < schedule.length; i++) {
-      const scheduleData = schedule[i];
+  // Append "Schedule" header
+  quillRef.current.quill.insertText(insertIndex, "\nSchedule", { header: 2 });
+  insertIndex = quillRef.current.quill.getLength();
+
+  for (let i = 0; i < schedule.length; i++) {
+    const scheduleData = schedule[i];
+    quillRef.current.quill.insertText(
+      insertIndex,
+      `\n${scheduleData.trainingDay}`,
+      { header: 3 }
+    );
+    insertIndex = quillRef.current.quill.getLength();
+
+    const times = scheduleData.time;
+    const event = scheduleData.event;
+    for (let j = 0; j < times.length; j++) {
       quillRef.current.quill.insertText(
         insertIndex,
-        `\n${scheduleData.trainingDay}`,
-        { header: 3 }
+        `\n${times[j]}: ${event[j]}`,
+        { header: 4 }
       );
       insertIndex = quillRef.current.quill.getLength();
-
-      const times = scheduleData.time;
-      const event = scheduleData.event;
-      for (let j = 0; j < times.length; j++) {
-        quillRef.current.quill.insertText(
-          insertIndex,
-          `\n${times[j]}: ${event[j]}`,
-          { header: 4 }
-        );
-        insertIndex = quillRef.current.quill.getLength();
-      }
     }
-  };
+  }
+};
   const handleSave = () => {
     const content = quillRef.current?.getHtml();
     insert({
@@ -119,15 +122,18 @@ function UploadMaterialPanel({ value, index }) {
       });
     navigate("/List");
   };
-  const handleDownload = async () => {
-    const html = quillRef.current?.getHtml();
-    const options = {
-      margin: 1,
-      filename: `${title}.pdf`,
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-    };
-    html2pdf().set(options).from(html).save();
+  const handleDownload = () => {
+      const quill = quillRef.current;
+      const html = quill.getHtml();
+  
+      const options = {
+        filename: `${newTitle}.pdf`,
+        image: { type: "jpeg", quality: 0.98 }, 
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "in", format: [10, 10], orientation: "landscape" },
+      };
+  
+      html2pdf().set(options).from(html).save();
   };
   const renderDialog = () => {
     if (openConfirmDialog.dialog === "save") {
@@ -175,20 +181,6 @@ function UploadMaterialPanel({ value, index }) {
     <div className=' p-4 container'>
       <CustomTabPanel value={value} index={0}>
         <input type='text' value={title} onChange={handleOnChange} />
-        <FormControl fullWidth>
-          <InputLabel id='semester-select-label'>Semester</InputLabel>
-          <Select
-            labelId='semester-select-label'
-            id='semester-select'
-            value={semester}
-            label='Semester'
-            onChange={handleGetSemester}
-          >
-            <MenuItem value={"1st Semester"}>1st Semester</MenuItem>
-            <MenuItem value={"2nd Semester"}>2nd Semester</MenuItem>
-          </Select>
-        </FormControl>
-        <QuillComponent ref={quillRef} />
         <div className='gap-3 rounded-lg p-4 flex justify-end'>
           <Button
             variant='contained'
@@ -236,6 +228,21 @@ function UploadMaterialPanel({ value, index }) {
           onClose={() => setOpenAddTableModal(false)}
           tableModule={quillRef.current?.getTable()}
         />
+        <FormControl fullWidth>
+          <InputLabel id='semester-select-label'>Semester</InputLabel>
+          <Select
+            labelId='semester-select-label'
+            id='semester-select'
+            value={semester}
+            label='Semester'
+            onChange={handleGetSemester}
+          >
+            <MenuItem value={"1st Semester"}>1st Semester</MenuItem>
+            <MenuItem value={"2nd Semester"}>2nd Semester</MenuItem>
+          </Select>
+        </FormControl>
+        <QuillComponent ref={quillRef} />
+        
 
         {renderDialog()}
       </CustomTabPanel>
