@@ -180,8 +180,9 @@ function UploadMaterialPanel({ value, index }) {
   return (
     <div className=' p-4 container'>
       <CustomTabPanel value={value} index={0}>
-        <input type='text' value={title} onChange={handleOnChange} />
-        <div className='gap-3 rounded-lg p-4 flex justify-end'>
+        <div className="flex justify-between gap-4 mb-3">
+        <input type='text' value={title} className=" " onChange={handleOnChange} />
+        <div className='gap-3 rounded-lg flex justify-end'>
           <Button
             variant='contained'
             onClick={() =>
@@ -222,12 +223,15 @@ function UploadMaterialPanel({ value, index }) {
           >
             Add Table
           </Button>
+          </div>
+
         </div>
         <AddTableModal
           open={openAddTableModal}
           onClose={() => setOpenAddTableModal(false)}
           tableModule={quillRef.current?.getTable()}
         />
+        <div className="mb-3">
         <FormControl fullWidth>
           <InputLabel id='semester-select-label'>Semester</InputLabel>
           <Select
@@ -237,10 +241,12 @@ function UploadMaterialPanel({ value, index }) {
             label='Semester'
             onChange={handleGetSemester}
           >
+            
             <MenuItem value={"1st Semester"}>1st Semester</MenuItem>
             <MenuItem value={"2nd Semester"}>2nd Semester</MenuItem>
           </Select>
         </FormControl>
+        </div>
         <QuillComponent ref={quillRef} />
         
 
