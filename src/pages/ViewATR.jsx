@@ -8,10 +8,13 @@ import { html2pdf } from "html2pdf.js";
 import Swal from "sweetalert2";
 import AddTableModal from "../components/AddTableModal";
 import { getAttendance } from "../../mysql/getAttendance";
+import {getAttendanceDates} from "../../mysql/getAttendanceDates";
 import { getReportDates } from "../../firebase/Report/getReportDates";
 import { getReportByDate } from "../../firebase/Report/getReportByDate";
 import SelectDateDialog from "../components/ui/SelectDateDialog";
+import SelectDateAttendanceDialog from "../components/ui/SelectDateAttendanceDialog";
 import Loading from "../components/ui/Loading";
+import { get } from "firebase/database";
 export async function loader({ params }) {
   const { id } = params;
   const data = await viewATR(id);
@@ -26,6 +29,8 @@ function ViewATR() {
   const [reportDates, setReportDates] = React.useState([]);
   const [attendance, setAttendance] = React.useState([]);
   const [reports, setReports] = React.useState([]);
+  const [attendanceDates, setAttendanceDates] = React.useState([]);
+  const [openSelectAttendanceDialog, setOpenSelectAttendanceDialog] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
   const [openSelectDateDialog, setOpenSelectDateDialog] = React.useState(false);
@@ -168,17 +173,29 @@ function ViewATR() {
   
       html2pdf().set(options).from(html).save();
   };
+  const getAttendanceDate = async () => {
+    try {
+      const data = await getAttendanceDates();
+      setAttendanceDates(data.log_dates);
+    } catch (error) {
+      console.error("Error fetching attendance dates:", error);
+    }
+  }
   React.useEffect(() => {
       if (reports && reports.length > 0) {
         console.log("Reports state updated, rendering reports");
         handleGetReports();
       }
     }, [reports]);
+    
+  React.useEffect(() => {
+    getAttendanceDate();
+  },[])
 
-     const getAttendanceData = async () => {
+     const getAttendanceData = async (date) => {
         try {
           setLoading(true);
-          const data = await getAttendance();
+          const data = await getAttendance(date);
           const attendanceData = Object.values(data);
       
           const maleAttendanceCount = attendanceData[1];
@@ -289,7 +306,7 @@ function ViewATR() {
             Get Current Incident Reports
           </Button>
            <Button variant='contained'  onClick={() =>{
-            getAttendanceData();
+            setOpenSelectAttendanceDialog(true);
            }}> 
             Get Attendance
           </Button>
@@ -317,6 +334,19 @@ function ViewATR() {
             }}
             selectedDate={selectedDate}
             Dates={reportDates}
+          />
+      <SelectDateAttendanceDialog
+            open={openSelectAttendanceDialog}
+            onClose={() => setOpenSelectAttendanceDialog(false)}
+            onChange={(e) => {
+              setSelectedDate(e.target.value);
+            }}
+            onSubmit={() => {
+              setOpenSelectAttendanceDialog(false);
+              getAttendanceData(selectedDate);
+            }}
+            selectedDate={selectedDate}
+            Dates={attendanceDates}
           />
     {loading && <Loading
      show={loading}
