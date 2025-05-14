@@ -1,30 +1,52 @@
 import React from "react";
 import CustomTabPanel from "../ui/CustomTabPanel";
-import { Button } from "@mui/material";
+import { Button, TextField, Paper, Typography, Box, CircularProgress } from "@mui/material";
 import axios from "axios";
 import Swal from "sweetalert2";
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 
 function SendExcuseLetter({ value, index }) {
-    const [state, setState] = React.useState({});
+    const [state, setState] = React.useState({
+        subject: "",
+        Message: ""
+    });
+    const [loading, setLoading] = React.useState(false);
+
     const handleChange = (event) => {
         setState({ ...state, [event.target.name]: event.target.value });
-    }
+    };
+
     React.useEffect(() => {
         console.log("State changed:", state);
-    },[state]);
+    }, [state]);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+        
+        // Validate inputs
+        if (!state.subject || !state.Message) {
+            Swal.fire({
+                icon: "warning",
+                title: "Incomplete Form",
+                text: "Please fill in both subject and message fields.",
+            });
+            return;
+        }
+        
+        setLoading(true);
         const form = new FormData();
         form.append("subject", state.subject);
         form.append("message", state.Message);
-        setState({ subject: "", Message: "" });
+        
         try {
             const response = await axios.post("http://localhost/backend/sendExcuseLetter.php", form, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
+            
             if (response.status === 200) {
+                setState({ subject: "", Message: "" });
                 Swal.fire({
                     icon: "success",
                     title: "Success",
@@ -39,20 +61,75 @@ function SendExcuseLetter({ value, index }) {
             }
         } catch (error) {
             console.error("Error sending request:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Failed to send email. Please try again later.",
+            });
+        } finally {
+            setLoading(false);
         }
     };
+
     return (
         <CustomTabPanel value={value} index={index}>
-        <div className='flex flex-col items-center justify-center h-screen'>
-            <h1>Send Excuse Letter For late submission of reports</h1>
-            <label htmlFor="Subject">Subject:</label>
-            <input type="text" name = "subject" onChange={handleChange} />
-            <label htmlFor="Message">Message:</label>
-            <textarea name="Message" onChange={handleChange} id="Message" cols="30" rows="10"></textarea>
-            <Button variant="contained" onClick={handleSubmit}>Send</Button>
-
-        </div>
+            <Box className="flex flex-col items-center justify-center min-h-screen py-8 px-4">
+                <Paper elevation={3} className="p-8 w-full max-w-md">
+                    <Box className="flex items-center justify-center mb-6">
+                        <MailOutlineIcon fontSize="large" color="primary" />
+                        <Typography variant="h5" component="h1" className="ml-2 font-semibold text-center">
+                            Send Excuse Letter
+                        </Typography>
+                    </Box>
+                    
+                    <Typography variant="body2" color="textSecondary" className="mb-6 text-center">
+                        Use this form to submit an excuse letter for late submission of reports
+                    </Typography>
+                    
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            label="Subject"
+                            name="subject"
+                            value={state.subject}
+                            onChange={handleChange}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            placeholder="Enter subject line"
+                            required
+                        />
+                        
+                        <TextField
+                            label="Message"
+                            name="Message"
+                            value={state.Message}
+                            onChange={handleChange}
+                            variant="outlined"
+                            fullWidth
+                            margin="normal"
+                            multiline
+                            rows={6}
+                            placeholder="Type your excuse letter content here..."
+                            required
+                        />
+                        
+                        <Box className="mt-6">
+                            <Button 
+                                variant="contained" 
+                                color="primary" 
+                                fullWidth 
+                                onClick={handleSubmit}
+                                disabled={loading}
+                                startIcon={loading ? <CircularProgress size={20} /> : null}
+                            >
+                                {loading ? "Sending..." : "Send Letter"}
+                            </Button>
+                        </Box>
+                    </form>
+                </Paper>
+            </Box>
         </CustomTabPanel>
     );
-    }
+}
+
 export default SendExcuseLetter;
