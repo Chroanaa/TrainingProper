@@ -94,7 +94,13 @@ function Header() {
           <Send size={16} />
           <span>SEND DOCUMENT</span>
         </NavLink>
-
+        <NavLink
+          to='/CDC'
+          className='text-[0.75rem] hover:text-[#FFD700] flex items-center gap-2'
+          style={currentLink}
+        >
+          CDC
+        </NavLink>
         <Button
           onClick={() => setOpen(true)}
           sx={{

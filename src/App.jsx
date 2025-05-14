@@ -16,6 +16,7 @@ import CourseMaterialPreparation from "./pages/CourseMaterialPreparation";
 import IncidentReport from "./pages/IncidentReport";
 import TrainingReport from "./pages/TrainingReport";
 import ViewATR, { loader as viewAtrLoader } from "./pages/ViewATR";
+import CDC from "./pages/CDC";
 import AuthProvider from "../Auth/AuthProvider";
 import { AuthContext } from "../Auth/AuthProvider";
 import LoginPage from "./pages/LoginPage";
@@ -46,6 +47,7 @@ function App() {
               element={<ViewATR />}
               loader={viewAtrLoader}
             />
+            <Route path='CDC' element={<CDC />} />
           </Route>
         </Route>
       </Route>
