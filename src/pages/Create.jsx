@@ -16,6 +16,8 @@ import { getAttendance } from "../../mysql/getAttendance";
 import { getReportDates } from "../../firebase/Report/getReportDates";
 import { getReportByDate } from "../../firebase/Report/getReportByDate";
 import SelectDateDialog from "../components/ui/SelectDateDialog";
+import SelectDateAttendanceDialog from "../components/ui/SelectDateAttendanceDialog";
+import { getAttendanceDates } from "../../mysql/getAttendanceDates";
 function Create() {
   const quillRef = React.useRef(null);
   const [title, setTitle] = React.useState("Untitled");
@@ -23,6 +25,8 @@ function Create() {
   const [reports, setReports] = React.useState([]);
   const [reportDates, setReportDates] = React.useState([]);
   const [selectedDate, setSelectedDate] = React.useState("");
+  const [attendanceDates, setAttendanceDates] = React.useState([]);
+  const [openSelectDateAttendanceDialog, setOpenSelectDateAttendanceDialog] = React.useState(false);
   const [openSelectDateDialog, setOpenSelectDateDialog] = React.useState(false);
 
   const [openConfirmDialog, setOpenConfirmDialog] = React.useState({
@@ -40,12 +44,19 @@ function Create() {
     });
     console.log("reportDates", reportDates);
   }, []);
-
+  async function getAttendanceDate() {
+    const data = await getAttendanceDates();
+    setAttendanceDates(data.log_dates);
+  }
+React.useEffect(() => {
+  getAttendanceDate();
+}
+, []);
   // gets the atttendance and renders it to the quill editor
-  const getAttendanceData = async () => {
+  const getAttendanceData = async (date) => {
     try {
       setLoading(true);
-      const data = await getAttendance();
+      const data = await getAttendance(date);
       const attendanceData = Object.values(data);
   
       const maleAttendanceCount = attendanceData[1];
@@ -245,7 +256,6 @@ const handleDownload = () => {
     html2pdf().set(options).from(html).save();
 };
 
-   
   const getReports = async (date) => {
     try {
       setLoading(true);
@@ -404,10 +414,7 @@ const handleDownload = () => {
             variant='contained'
             class='bg-[#2C2C2C] text-white px-5 rounded-b-sm'
             onClick={() => {
-              setOpenConfirmDialog({
-                isOpen: true,
-                dialog: "Attendance",
-              });
+              setOpenSelectDateAttendanceDialog(true);
             }}
           >
             Get Attendance
@@ -444,6 +451,19 @@ const handleDownload = () => {
             }}
             selectedDate={selectedDate}
             Dates={reportDates}
+          />
+          <SelectDateAttendanceDialog
+            open={openSelectDateAttendanceDialog}
+            onClose={() => setOpenSelectDateAttendanceDialog(false)}
+            onChange={(e) => {
+              setSelectedDate(e.target.value);
+            }}
+            onSubmit={() => {
+              setOpenSelectDateAttendanceDialog(false);
+              getAttendanceData(selectedDate);
+            }}
+            selectedDate={selectedDate}
+            Dates={attendanceDates}
           />
         </div>
       </div>
