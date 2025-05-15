@@ -75,7 +75,13 @@ function ReportListPanel({ value, reports }) {
                 id={index}
               />
               <div className="flex gap-3 mt-4">
-                <Button
+                <Button 
+                   sx={{ 
+                    backgroundColor: '#556B2F',
+                    '&:hover': {
+                      backgroundColor: '#4A5D29'
+                    }
+                  }}
                   variant="contained"
                   color="primary"
                   startIcon={<EditIcon />}

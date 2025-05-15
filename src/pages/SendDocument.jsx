@@ -294,8 +294,9 @@ const handleClear = () =>{
 
       <div className="mb-6">
         <button
+        
           onClick={handleSendFile}
-          className={`w-full px-4 py-2 text-white font-semibold rounded-lg bg-blue-600 hover:bg-blue-700`}
+          className={`w-full px-4 py-2 text-white font-semibold rounded-lg bg-[#556b2f] hover:bg-[#4a5d29]`}
         >
           Send Document
         </button>
@@ -305,8 +306,9 @@ const handleClear = () =>{
         <button
           onClick={handleClear}
           
-          className={`w-full px-4 py-2 text-white font-semibold rounded-lg bg-blue-600 hover:bg-blue-700`}
+          className={`w-full px-4 py-2 text-white font-semibold rounded-lg bg-[#2c2c2c] hover:bg-[#4a5d29]`}
         >
+
           Clear
         </button>
       </div>

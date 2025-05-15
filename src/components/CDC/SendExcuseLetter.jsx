@@ -115,6 +115,12 @@ function SendExcuseLetter({ value, index }) {
                         
                         <Box className="mt-6">
                             <Button 
+                              sx={{ 
+                                backgroundColor: '#556B2F',
+                                '&:hover': {
+                                  backgroundColor: '#4A5D29'
+                                }
+                              }}
                                 variant="contained" 
                                 color="primary" 
                                 fullWidth 

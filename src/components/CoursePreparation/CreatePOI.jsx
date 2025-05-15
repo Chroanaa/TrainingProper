@@ -183,18 +183,32 @@ function UploadMaterialPanel({ value, index }) {
         <div className="flex justify-between gap-4 mb-3">
         <input type='text' value={title} className=" " onChange={handleOnChange} />
         <div className='gap-3 rounded-lg flex justify-end'>
+        <Button
+  sx={{ 
+    backgroundColor: '#556B2F',
+    '&:hover': {
+      backgroundColor: '#4A5D29'
+    }
+  }}
+  variant='contained'
+  onClick={() =>
+    setOpenConfirmDialog({
+      isOpen: true,
+      dialog: "save",
+    })
+  }
+>
+  Save
+</Button>
+
+
           <Button
-            variant='contained'
-            onClick={() =>
-              setOpenConfirmDialog({
-                isOpen: true,
-                dialog: "save",
-              })
+           sx={{ 
+            backgroundColor: '#2c2c2c',
+            '&:hover': {
+              backgroundColor: '#4A5D29'
             }
-          >
-            Save
-          </Button>
-          <Button
+          }}
             variant='contained'
             onClick={() =>
               setOpenConfirmDialog({
@@ -206,7 +220,14 @@ function UploadMaterialPanel({ value, index }) {
           >
             Get Schedules
           </Button>
+
           <Button
+                     sx={{ 
+                      backgroundColor: '#2c2c2c',
+                      '&:hover': {
+                        backgroundColor: '#4A5D29'
+                      }
+                    }}
             variant='contained'
             onClick={() =>
               setOpenConfirmDialog({
@@ -218,6 +239,12 @@ function UploadMaterialPanel({ value, index }) {
             Download
           </Button>
           <Button
+                     sx={{ 
+                      backgroundColor: '#2c2c2c',
+                      '&:hover': {
+                        backgroundColor: '#4A5D29'
+                      }
+                    }}
             variant='contained'
             onClick={() => setOpenAddTableModal(true)}
           >

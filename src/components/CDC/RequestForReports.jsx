@@ -194,6 +194,7 @@ function RequestForReports({ value, index }) {
           
           <Grid item xs={12} sx={{ textAlign: 'center' }}>
             <Button 
+            
               onClick={handleSubmit} 
               variant="contained" 
               color="primary" 
@@ -204,7 +205,8 @@ function RequestForReports({ value, index }) {
                 py: 1.5,
                 fontWeight: 'bold',
                 textTransform: 'none',
-                fontSize: '1rem'
+                fontSize: '1rem',
+                backgroundColor: '#556B2F',
               }}
             >
               Send Notification

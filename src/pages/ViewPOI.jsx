@@ -117,22 +117,50 @@ const handleGetSchedule = async () => {
 }; 
   return (
     <div>
-      <div className='flex mb-2 gap-2'>
+      <div className='flex mb-2 gap-2 w-full'>
       <input  className="px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm transition-all duration-200 "  type='text' value={newTitle} onChange={handleOnChange} />
-      <div className='flex gap-1'>
+      <div className='flex items-center gap-1  w-full'>
               
-      <Button variant='contained' onClick={handleOnSave}>
+        <div>
+      <Button 
+                 sx={{ 
+                  backgroundColor: '#556b2f',
+                  '&:hover': {
+                    backgroundColor: '#4A5D29'
+                  }
+                }}
+      variant='contained' onClick={handleOnSave}>
         Save
       </Button>
-      <Button variant='contained' onClick={handleDownload}>
+      </div>
+      <div>
+      <Button 
+                 sx={{ 
+                  backgroundColor: '#2c2c2c',
+                  '&:hover': {
+                    backgroundColor: '#4A5D29'
+                  }
+                }}
+      variant='contained' onClick={handleDownload}>
         Download
       </Button>
-      <Button variant='contained' onClick={handleGetSchedule} disabled={disabled}>
+      </div>
+      <div>
+      <Button 
+                 sx={{ 
+                  backgroundColor: '#2c2c2c',
+                  '&:hover': {
+                    backgroundColor: '#4A5D29'
+                  }
+                }}
+      variant='contained' onClick={handleGetSchedule} disabled={disabled}>
        Get Schedules
       </Button>
-      <FormControl fullWidth>
+      </div>
+      <FormControl>
                 <InputLabel id='semester-select-label'>Semester</InputLabel>
                 <Select
+                  className="w-50"
                   labelId='semester-select-label'
                   id='semester-select'
                   value={semester}

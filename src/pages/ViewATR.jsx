@@ -4,7 +4,7 @@ import QuillComponent from "../components/ui/Quill";
 import { useLoaderData } from "react-router-dom";
 import { updateATR } from "../../firebase/ATR/updateATR";
 import { Button } from "@mui/material";
-import { html2pdf } from "html2pdf.js";
+import  html2pdf  from "html2pdf.js";
 import Swal from "sweetalert2";
 import AddTableModal from "../components/AddTableModal";
 import { getAttendance } from "../../mysql/getAttendance";
